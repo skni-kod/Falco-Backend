@@ -16,17 +16,18 @@ namespace FalcoBackEnd.Services.Implemetations
     public class TokenService : ITokenService
     {
         private readonly AppSettingsDTO appSettings;
+        private readonly IHashService hashService;
+
+        public TokenService(IOptions<AppSettingsDTO> appSettings, IHashService hashService)
+        {
+            this.appSettings = appSettings.Value;
+            this.hashService = hashService;
+        }
 
         private List<User> users = new List<User>
         {
             new User {Id = 0, FirstName="Horse", LastName="Boar", Username="admin", Password="password"}
         };
-
-        public TokenService(IOptions<AppSettingsDTO> appSettings)
-        {
-            this.appSettings = appSettings.Value;
-            
-        }
 
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
