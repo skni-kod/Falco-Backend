@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FalcoBackEnd.Services.Interfaces;
 using FalcoBackEnd.Services.Implemetations;
+using FalcoBackEnd.ModelsDTO;
 
 namespace FalcoBackEnd
 {
@@ -35,6 +36,7 @@ namespace FalcoBackEnd
             services.AddTransient<ITokenService, TokenService>();
 
             services.AddControllers();
+            services.Configure<AppSettingsDTO>(Configuration.GetSection("AppSettings"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FalcoBackEnd", Version = "v1" });

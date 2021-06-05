@@ -1,4 +1,6 @@
-﻿using FalcoBackEnd.Services.Interfaces;
+﻿using FalcoBackEnd.ModelsDTO;
+using FalcoBackEnd.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,13 +14,14 @@ namespace FalcoBackEnd.Services.Implemetations
 {
     public class TokenService : ITokenService
     {
+        private readonly AppSettingsDTO appSettings;
         private JwtSecurityTokenHandler tokenHandler;
         private byte[] secretKey;
 
-        public TokenService()
+        public TokenService(IOptions<AppSettingsDTO> appSettings)
         {
+            this.appSettings = appSettings.Value;
             tokenHandler = new JwtSecurityTokenHandler();
-            secretKey = Encoding.ASCII.GetBytes("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
         }
 
         public bool Authenticate(string username, string password)
@@ -38,7 +41,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public string NewToken()
         {
-
+            secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, "KonDzik") }),
@@ -54,6 +57,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public ClaimsPrincipal VerifyToken(string token)
         {
+            secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
             var claims = tokenHandler.ValidateToken(token,
                 new TokenValidationParameters
                 {
