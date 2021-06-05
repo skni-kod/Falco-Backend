@@ -32,11 +32,12 @@ namespace FalcoBackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettingsDTO>(Configuration.GetSection("AppSettings"));
 
             services.AddTransient<ITokenService, TokenService>();
 
             services.AddControllers();
-            services.Configure<AppSettingsDTO>(Configuration.GetSection("AppSettings"));
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FalcoBackEnd", Version = "v1" });
@@ -51,7 +52,7 @@ namespace FalcoBackEnd
                o.TokenValidationParameters = new TokenValidationParameters
                {
                    ValidateIssuerSigningKey = true,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")),
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["AppSettings:Secret"])),
                    ValidateLifetime = true,
                    ValidateAudience = false,
                    ValidateIssuer = false,

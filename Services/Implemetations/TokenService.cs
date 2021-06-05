@@ -54,21 +54,5 @@ namespace FalcoBackEnd.Services.Implemetations
             var jwtString = tokenHandler.WriteToken(token);
             return jwtString;
         }
-
-        public ClaimsPrincipal VerifyToken(string token)
-        {
-            secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var claims = tokenHandler.ValidateToken(token,
-                new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-                    ValidateLifetime = true,
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ClockSkew = TimeSpan.Zero
-               }, out SecurityToken validatedToken);
-            return claims;
-        }
     }
 }

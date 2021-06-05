@@ -6,6 +6,5 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         bool Authenticate(string username, string password);
         string NewToken();
-        ClaimsPrincipal VerifyToken(string token);
     }
 }
