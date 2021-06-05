@@ -1,12 +1,12 @@
-﻿using FalcoBackEnd.Entities;
+﻿using FalcoBackEnd.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FalcoBackEnd.Models
+namespace FalcoBackEnd.ModelsDTO
 {
-    public class AuthenticateResponse
+    public class AuthenticateResponseDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -15,7 +15,7 @@ namespace FalcoBackEnd.Models
         public string Token { get; set; }
 
 
-        public AuthenticateResponse(User user, string token)
+        public AuthenticateResponseDTO(User user, string token)
         {
             Id = user.Id;
             FirstName = user.FirstName;
