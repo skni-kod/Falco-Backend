@@ -35,6 +35,7 @@ namespace FalcoBackEnd
             services.Configure<AppSettingsDTO>(Configuration.GetSection("AppSettings"));
 
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IHashService, HashService>();
 
             services.AddControllers();
             
