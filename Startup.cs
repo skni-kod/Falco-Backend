@@ -32,7 +32,7 @@ namespace FalcoBackEnd
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddTransient<ITokenManager, TokenService>();
+            services.AddTransient<ITokenService, TokenService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

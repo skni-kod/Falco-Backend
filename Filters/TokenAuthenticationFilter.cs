@@ -12,7 +12,7 @@ namespace FalcoBackEnd.Filters
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var tokenManager = (ITokenManager)context.HttpContext.RequestServices.GetService(typeof(ITokenManager));
+            var tokenManager = (ITokenService)context.HttpContext.RequestServices.GetService(typeof(ITokenService));
 
             var result = true;
             if(!context.HttpContext.Request.Headers.ContainsKey("Authorization"))

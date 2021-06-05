@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FalcoBackEnd.Services.Implemetations
 {
-    public class TokenService : ITokenManager
+    public class TokenService : ITokenService
     {
         private JwtSecurityTokenHandler tokenHandler;
         private byte[] secretKey;

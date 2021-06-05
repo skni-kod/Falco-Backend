@@ -2,7 +2,7 @@
 
 namespace FalcoBackEnd.Services.Interfaces
 {
-    public interface ITokenManager
+    public interface ITokenService
     {
         bool Authenticate(string username, string password);
         string NewToken();

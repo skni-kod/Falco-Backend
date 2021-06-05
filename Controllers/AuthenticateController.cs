@@ -11,18 +11,18 @@ namespace FalcoBackEnd.Controllers
     [Route("[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        private readonly ITokenManager tokenManager;
+        private readonly ITokenService tokenService;
 
-        public AuthenticateController(ITokenManager tokenManager)
+        public AuthenticateController(ITokenService tokenService)
         {
-            this.tokenManager = tokenManager;
+            this.tokenService = tokenService;
         }
         [HttpGet]
         public IActionResult Authenticate(string user, string pwd)
         {
-            if (tokenManager.Authenticate(user, pwd))
+            if (tokenService.Authenticate(user, pwd))
             {
-                return Ok(new { Token = tokenManager.NewToken() });
+                return Ok(new { Token = tokenService.NewToken() });
             }
             else
             {
