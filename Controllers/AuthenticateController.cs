@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FalcoBackEnd.Services.Interfaces;
+using FalcoBackEnd.ModelsDTO;
 
 namespace FalcoBackEnd.Controllers
 {
@@ -17,18 +18,17 @@ namespace FalcoBackEnd.Controllers
         {
             this.tokenService = tokenService;
         }
-        [HttpGet]
-        public IActionResult Authenticate(string user, string pwd)
+        [HttpPost]
+        public IActionResult Authenticate(AuthenticateRequestDTO model)
         {
-            if (tokenService.Authenticate(user, pwd))
+            var response = tokenService.Authenticate(model);
+
+            if (response == null)
             {
-                return Ok(new { Token = tokenService.NewToken() });
+                return BadRequest(new { message = "Username or password is incorrect" });
             }
-            else
-            {
-                ModelState.AddModelError("Unauthorized", "fck off");
-                return Unauthorized(ModelState);
-            }
+
+            return Ok(response);
         }
     }
 }

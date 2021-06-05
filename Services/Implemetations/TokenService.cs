@@ -1,4 +1,5 @@
-﻿using FalcoBackEnd.ModelsDTO;
+﻿using FalcoBackEnd.Models;
+using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,40 +16,39 @@ namespace FalcoBackEnd.Services.Implemetations
     public class TokenService : ITokenService
     {
         private readonly AppSettingsDTO appSettings;
-        private JwtSecurityTokenHandler tokenHandler;
-        private byte[] secretKey;
+
+        private List<User> users = new List<User>
+        {
+            new User {Id = 0, FirstName="Horse", LastName="Boar", Username="admin", Password="password"}
+        };
 
         public TokenService(IOptions<AppSettingsDTO> appSettings)
         {
             this.appSettings = appSettings.Value;
-            tokenHandler = new JwtSecurityTokenHandler();
+            
         }
 
-        public bool Authenticate(string username, string password)
+        public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
-            if (!string.IsNullOrWhiteSpace(username) &&
-                !string.IsNullOrWhiteSpace(password) &&
-                username.ToLower() == "admin" &&
-                password == "password")
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var user = users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+
+            if (user == null) return null;
+
+            var token = NewToken(user);
+
+            return new AuthenticateResponseDTO(user, token);
         }
 
-        public string NewToken()
+        public string NewToken(User user)
         {
-            secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, "KonDzik") }),
-                Expires = DateTime.UtcNow.AddMinutes(1),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(secretKey),
-                    SecurityAlgorithms.HmacSha256Signature)
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                                                     new Claim(ClaimTypes.Name, user.Username.ToString())}),
+                Expires = DateTime.UtcNow.AddMinutes(10),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtString = tokenHandler.WriteToken(token);
