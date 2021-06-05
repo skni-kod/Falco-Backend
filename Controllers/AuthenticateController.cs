@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FalcoBackEnd.TokenAuthorization;
+using FalcoBackEnd.Services.Interfaces;
+using FalcoBackEnd.ModelsDTO;
 
 namespace FalcoBackEnd.Controllers
 {
@@ -11,24 +12,23 @@ namespace FalcoBackEnd.Controllers
     [Route("[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        private readonly ITokenManager tokenManager;
+        private readonly ITokenService tokenService;
 
-        public AuthenticateController(ITokenManager tokenManager)
+        public AuthenticateController(ITokenService tokenService)
         {
-            this.tokenManager = tokenManager;
+            this.tokenService = tokenService;
         }
-        [HttpGet]
-        public IActionResult Authenticate(string user, string pwd)
+        [HttpPost]
+        public IActionResult Authenticate(AuthenticateRequestDTO model)
         {
-            if (tokenManager.Authenticate(user, pwd))
+            var response = tokenService.Authenticate(model);
+
+            if (response == null)
             {
-                return Ok(new { Token = tokenManager.NewToken() });
+                return BadRequest(new { message = "Username or password is incorrect" });
             }
-            else
-            {
-                ModelState.AddModelError("Unauthorized", "fck off");
-                return Unauthorized(ModelState);
-            }
+
+            return Ok(response);
         }
     }
 }
