@@ -37,6 +37,7 @@ namespace FalcoBackEnd
 
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IHashService, HashService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddControllers();
             
