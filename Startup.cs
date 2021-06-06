@@ -17,6 +17,7 @@ using System.Text;
 using FalcoBackEnd.Services.Interfaces;
 using FalcoBackEnd.Services.Implemetations;
 using FalcoBackEnd.ModelsDTO;
+using FalcoBackEnd.Helpers;
 
 namespace FalcoBackEnd
 {
@@ -78,6 +79,8 @@ namespace FalcoBackEnd
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
