@@ -1,4 +1,5 @@
 ﻿using FalcoBackEnd.ModelsDTO;
+using FalcoBackEnd.Services.Implemetations;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -23,19 +24,19 @@ namespace FalcoBackEnd.Helpers
             this.appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, ITokenService tokenService)
+        public async Task Invoke(HttpContext context, IUserService userService)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
             {
-                attachUserToContext(context, tokenService, token);
+                attachUserToContext(context, userService, token);
             }
 
             await next(context);
         }
 
-        private void attachUserToContext(HttpContext context, ITokenService tokenService, string token)
+        private void attachUserToContext(HttpContext context, IUserService userService, string token)
         {
             try
             {
@@ -58,8 +59,6 @@ namespace FalcoBackEnd.Helpers
             }
             catch
             {
-
-                throw;
             }
         }
     }
