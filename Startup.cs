@@ -18,6 +18,8 @@ using FalcoBackEnd.Services.Interfaces;
 using FalcoBackEnd.Services.Implemetations;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Helpers;
+using FalcoBackEnd.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FalcoBackEnd
 {
@@ -62,6 +64,8 @@ namespace FalcoBackEnd
                    ClockSkew = TimeSpan.Zero
                };
            });
+
+            services.AddDbContext<FalcoDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString(nameof(FalcoDbContext))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
