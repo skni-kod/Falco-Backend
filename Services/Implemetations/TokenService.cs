@@ -26,12 +26,12 @@ namespace FalcoBackEnd.Services.Implemetations
 
         private List<User> users = new List<User>
         {
-            new User {Id = 0, FirstName="Horse", LastName="Boar", Username="admin", Password="password"}
+            new User {Id = 0, FirstName="Horse", LastName="Boar", Email="admin@gmail.com", Password="password"}
         };
 
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
-            var user = users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user = users.SingleOrDefault(x => x.Email == model.Username && x.Password == model.Password);
 
             if (user == null) return null;
 
@@ -47,7 +47,7 @@ namespace FalcoBackEnd.Services.Implemetations
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                                                     new Claim(ClaimTypes.Name, user.Username.ToString())}),
+                                                     new Claim(ClaimTypes.Email, user.Email.ToString())}),
                 Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
             };

@@ -11,7 +11,7 @@ namespace FalcoBackEnd.Services.Implemetations
     {
         private List<User> users = new List<User>
         {
-            new User {Id = 0, FirstName="Horse", LastName="Boar", Username="admin", Password="password"}
+            new User {Id = 0, FirstName="Horse", LastName="Boar", Email="admin@gmail.com", Password="password"}
         };
 
         public IEnumerable<User> GetAll()
