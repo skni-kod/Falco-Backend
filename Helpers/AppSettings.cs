@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FalcoBackEnd.ModelsDTO
 {
-    public class AppSettingsDTO
+    public class AppSettings
     {
         public string Secret { get; set; }
     }

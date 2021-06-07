@@ -15,10 +15,10 @@ namespace FalcoBackEnd.Services.Implemetations
 {
     public class TokenService : ITokenService
     {
-        private readonly AppSettingsDTO appSettings;
+        private readonly AppSettings appSettings;
         private readonly IHashService hashService;
 
-        public TokenService(IOptions<AppSettingsDTO> appSettings, IHashService hashService)
+        public TokenService(IOptions<AppSettings> appSettings, IHashService hashService)
         {
             this.appSettings = appSettings.Value;
             this.hashService = hashService;

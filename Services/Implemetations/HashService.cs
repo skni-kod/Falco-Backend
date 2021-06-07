@@ -12,8 +12,8 @@ namespace FalcoBackEnd.Services.Implemetations
 {
     public class HashService : IHashService
     {
-        private readonly AppSettingsDTO appSettings;
-        public HashService(IOptions<AppSettingsDTO> appSettings)
+        private readonly AppSettings appSettings;
+        public HashService(IOptions<AppSettings> appSettings)
         {
             this.appSettings = appSettings.Value;
         }

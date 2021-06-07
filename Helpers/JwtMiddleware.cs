@@ -16,9 +16,9 @@ namespace FalcoBackEnd.Helpers
     public class JwtMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly AppSettingsDTO appSettings;
+        private readonly AppSettings appSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<AppSettingsDTO> appSettings)
+        public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
         {
             this.next = next;
             this.appSettings = appSettings.Value;
