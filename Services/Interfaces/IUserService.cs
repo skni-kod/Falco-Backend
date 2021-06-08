@@ -11,6 +11,6 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         IEnumerable<User> GetAll();
         User GetById(int id);
-        ResponseDTO AddUser(User user);
+        ResponseDTO AddUser(UserDTO user);
     }
 }

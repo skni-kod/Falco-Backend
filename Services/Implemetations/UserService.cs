@@ -40,11 +40,12 @@ namespace FalcoBackEnd.Services.Implemetations
             return users.FirstOrDefault(x => x.Id == id);
         }
 
-        public ResponseDTO AddUser(User user)
+        public ResponseDTO AddUser(UserDTO userDTO)
         {
+            var newUser = new User { Email = userDTO.Email, FirstName = userDTO.FirstName, LastName = userDTO.LastName, Password = userDTO.Password, Id = userDTO.Id};
             try
             {
-                falcoDbContext.Users.Add(user);
+                falcoDbContext.Users.Add(newUser);
                 falcoDbContext.SaveChanges();
             }
             catch (Exception e)
