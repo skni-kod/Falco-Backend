@@ -42,7 +42,9 @@ namespace FalcoBackEnd
             services.AddTransient<IUserService, UserService>();
 
             services.AddControllers();
-            
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FalcoBackEnd", Version = "v1" });
