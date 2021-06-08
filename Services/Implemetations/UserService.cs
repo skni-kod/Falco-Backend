@@ -1,5 +1,7 @@
-﻿using FalcoBackEnd.Models;
+﻿using AutoMapper;
+using FalcoBackEnd.Models;
 using FalcoBackEnd.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,19 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             new User {Id = 0, FirstName="Horse", LastName="Boar", Email="admin@gmail.com", Password="password"}
         };
+
+        private readonly FalcoDbContext falcoDbContext;
+        private readonly ILogger logger;
+        private readonly IMapper mapper;
+
+        public UserService(FalcoDbContext falcoDbContext,
+                            ILogger<UserService> logger,
+                            IMapper mapper)
+        {
+            this.falcoDbContext = falcoDbContext;
+            this.logger = logger;
+            this.mapper = mapper;
+        }
 
         public IEnumerable<User> GetAll()
         {
