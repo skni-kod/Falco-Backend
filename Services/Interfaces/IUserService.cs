@@ -1,4 +1,5 @@
 ﻿using FalcoBackEnd.Models;
+using FalcoBackEnd.ModelsDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         IEnumerable<User> GetAll();
         User GetById(int id);
+        ResponseDTO AddUser(User user);
     }
 }

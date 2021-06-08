@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FalcoBackEnd.Models;
+using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -37,6 +38,20 @@ namespace FalcoBackEnd.Services.Implemetations
         public User GetById(int id)
         {
             return users.FirstOrDefault(x => x.Id == id);
+        }
+
+        public ResponseDTO AddUser(User user)
+        {
+            try
+            {
+                falcoDbContext.Users.Add(user);
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Failed" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Added user to DB", Status = "Success" };
         }
     }
 }
