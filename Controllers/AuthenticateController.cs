@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FalcoBackEnd.Services.Interfaces;
 using FalcoBackEnd.ModelsDTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FalcoBackEnd.Controllers
 {
@@ -19,6 +20,7 @@ namespace FalcoBackEnd.Controllers
             this.tokenService = tokenService;
         }
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Authenticate(AuthenticateRequestDTO model)
         {
             var response = tokenService.Authenticate(model);
