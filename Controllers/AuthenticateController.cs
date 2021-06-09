@@ -14,11 +14,11 @@ namespace FalcoBackEnd.Controllers
     [Route("[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        private readonly ITokenService tokenService;
+        private readonly IAuthService tokenService;
         private readonly IUserService userService;
 
 
-        public AuthenticateController(ITokenService tokenService, IUserService userService)
+        public AuthenticateController(IAuthService tokenService, IUserService userService)
         {
             this.tokenService = tokenService;
             this.userService = userService;
@@ -41,13 +41,12 @@ namespace FalcoBackEnd.Controllers
         [Route("register")]
         public IActionResult Register([FromBody]UserDTO user)
         {
-            var response = userService.AddUser(user);
+            var response = tokenService.AddUser(user);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
             }
             return Ok(response);
-
         }
     }
 }

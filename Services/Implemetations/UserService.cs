@@ -39,20 +39,5 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             return users.FirstOrDefault(x => x.Id == id);
         }
-
-        public ResponseDTO AddUser(UserDTO userDTO)
-        {
-            var newUser = new User { Email = userDTO.Email, FirstName = userDTO.FirstName, LastName = userDTO.LastName, Password = userDTO.Password, Id = userDTO.Id};
-            try
-            {
-                falcoDbContext.Users.Add(newUser);
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Failed" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Added user to DB", Status = "Success" };
-        }
     }
 }
