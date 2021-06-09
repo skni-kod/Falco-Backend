@@ -12,11 +12,6 @@ namespace FalcoBackEnd.Services.Implemetations
 {
     public class UserService : IUserService
     {
-        private List<User> users = new List<User>
-        {
-            new User {Id = 0, FirstName="Horse", LastName="Boar", Email="admin@gmail.com", Password="password"}
-        };
-
         private readonly FalcoDbContext falcoDbContext;
         private readonly ILogger logger;
         private readonly IMapper mapper;
@@ -29,15 +24,14 @@ namespace FalcoBackEnd.Services.Implemetations
             this.logger = logger;
             this.mapper = mapper;
         }
-
         public IEnumerable<User> GetAll()
         {
-            return users;
+            return falcoDbContext.Users;
         }
 
         public User GetById(int id)
         {
-            return users.FirstOrDefault(x => x.Id == id);
+            return falcoDbContext.Users.SingleOrDefault(x => x.Id == id);
         }
     }
 }

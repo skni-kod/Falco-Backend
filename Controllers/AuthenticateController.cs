@@ -15,13 +15,11 @@ namespace FalcoBackEnd.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly IAuthService tokenService;
-        private readonly IUserService userService;
 
 
-        public AuthenticateController(IAuthService tokenService, IUserService userService)
+        public AuthenticateController(IAuthService tokenService)
         {
             this.tokenService = tokenService;
-            this.userService = userService;
         }
 
         [HttpPost]
