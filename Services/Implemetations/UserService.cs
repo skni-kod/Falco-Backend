@@ -27,6 +27,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public ResponseDTO DeleteUser(UserDTO user)
         {
+            logger.LogInformation("Executing DeleteUser method");
+
             var result = falcoDbContext.Users.SingleOrDefault(u => u.Id == user.Id);
 
             if (result == null)
@@ -48,6 +50,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public ResponseDTO EditUser(UserDTO user)
         {
+            logger.LogInformation("Executing DeleteUser method");
+
             if (falcoDbContext.Users.Where(u => u.Id == user.Id).Count() == 0)
             {
                 return new ResponseDTO() {Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
@@ -65,13 +69,17 @@ namespace FalcoBackEnd.Services.Implemetations
             return new ResponseDTO() { Code = 200, Message = "Edit user in db", Status = "Succes" };
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetAllUsers()
         {
+            logger.LogInformation("Executing DeleteUser method");
+
             return falcoDbContext.Users;
         }
 
-        public User GetById(int id)
+        public User GetUserById(int id)
         {
+            logger.LogInformation("Executing GetUserById method");
+
             return falcoDbContext.Users.SingleOrDefault(x => x.Id == id);
         }
     }

@@ -23,7 +23,7 @@ namespace FalcoBackEnd.Controllers
         [HttpGet]
         public IActionResult GetAllUsers()
         {
-            var response = userService.GetAll();
+            var response = userService.GetAllUsers();
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
@@ -35,7 +35,7 @@ namespace FalcoBackEnd.Controllers
         [Route("{id}")]
         public IActionResult GetUser(int id)
         {
-            var response = userService.GetById(id);
+            var response = userService.GetUserById(id);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });

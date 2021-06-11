@@ -9,8 +9,8 @@ namespace FalcoBackEnd.Services.Interfaces
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAll();
-        User GetById(int id);
+        IEnumerable<User> GetAllUsers();
+        User GetUserById(int id);
         ResponseDTO EditUser(UserDTO user);
         ResponseDTO DeleteUser(UserDTO user);
     }
