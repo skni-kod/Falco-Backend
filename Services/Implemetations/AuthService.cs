@@ -1,6 +1,8 @@
-﻿using FalcoBackEnd.Models;
+﻿using AutoMapper;
+using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -18,14 +20,20 @@ namespace FalcoBackEnd.Services.Implemetations
         private readonly AppSettings appSettings;
         private readonly IHashService hashService;
         private readonly FalcoDbContext falcoDbContext;
+        private readonly ILogger logger;
+        private readonly IMapper mapper;
 
         public AuthService(IOptions<AppSettings> appSettings,
                             IHashService hashService,
-                            FalcoDbContext falcoDbContext)
+                            FalcoDbContext falcoDbContext,
+                            ILogger logger,
+                            IMapper mapper)
         {
             this.appSettings = appSettings.Value;
             this.hashService = hashService;
             this.falcoDbContext = falcoDbContext;
+            this.logger = logger;
+            this.mapper = mapper;
         }
 
         private List<User> users = new List<User>
@@ -35,6 +43,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
+            logger.LogInformation("Executing Authenticate method");
+
             var user = users.SingleOrDefault(x => x.Email == model.Username && x.Password == model.Password);
 
             if (user == null) return null;
@@ -46,6 +56,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public string NewToken(User user)
         {
+            logger.LogInformation("Executing NewToken method");
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -62,6 +74,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public ResponseDTO AddUser(UserDTO userDTO)
         {
+            logger.LogInformation("Executing AddUser method");
+
             var newUser = new User { Email = userDTO.Email, FirstName = userDTO.FirstName, LastName = userDTO.LastName, Password = userDTO.Password, Id = userDTO.Id };
             try
             {
