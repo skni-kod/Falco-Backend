@@ -16,7 +16,7 @@ namespace FalcoBackEnd.Services.Implemetations
         private readonly AppSettings appSettings;
         private readonly ILogger logger;
         public HashService(IOptions<AppSettings> appSettings,
-                            ILogger logger)
+                            ILogger<HashService> logger)
         {
             this.appSettings = appSettings.Value;
             this.logger = logger;

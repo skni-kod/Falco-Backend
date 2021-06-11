@@ -26,7 +26,7 @@ namespace FalcoBackEnd.Services.Implemetations
         public AuthService(IOptions<AppSettings> appSettings,
                             IHashService hashService,
                             FalcoDbContext falcoDbContext,
-                            ILogger logger,
+                            ILogger<AuthService> logger,
                             IMapper mapper)
         {
             this.appSettings = appSettings.Value;
@@ -36,16 +36,12 @@ namespace FalcoBackEnd.Services.Implemetations
             this.mapper = mapper;
         }
 
-        private List<User> users = new List<User>
-        {
-            new User {Id = 0, FirstName="Horse", LastName="Boar", Email="admin@gmail.com", Password="password"}
-        };
-
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
             logger.LogInformation("Executing Authenticate method");
+            model.Password = hashService.Encrypt(model.Password);
 
-            var user = users.SingleOrDefault(x => x.Email == model.Username && x.Password == model.Password);
+            var user = falcoDbContext.Users.SingleOrDefault(x => x.Email == model.Email && x.Password == model.Password);
 
             if (user == null) return null;
 
@@ -72,14 +68,20 @@ namespace FalcoBackEnd.Services.Implemetations
             return jwtString;
         }
 
-        public ResponseDTO AddUser(UserDTO userDTO)
+        public ResponseDTO AddUser(UserDTO user)
         {
             logger.LogInformation("Executing AddUser method");
 
-            var newUser = new User { Email = userDTO.Email, FirstName = userDTO.FirstName, LastName = userDTO.LastName, Password = userDTO.Password, Id = userDTO.Id };
+            if (falcoDbContext.Users.Where(u => u.Email == user.Email).Count() != 0)
+            {
+                return new ResponseDTO() { Code = 400, Message = $"User with email {user.Email} already exist in db", Status = "Error" };
+            }
+
+            user.Password = hashService.Encrypt(user.Password);
+
             try
             {
-                falcoDbContext.Users.Add(newUser);
+                falcoDbContext.Users.Add(mapper.Map<UserDTO, User>(user));
                 falcoDbContext.SaveChanges();
             }
             catch (Exception e)
