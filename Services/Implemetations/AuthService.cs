@@ -39,6 +39,7 @@ namespace FalcoBackEnd.Services.Implemetations
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
         {
             logger.LogInformation("Executing Authenticate method");
+            model.Password = hashService.Encrypt(model.Password);
 
             var user = falcoDbContext.Users.SingleOrDefault(x => x.Email == model.Email && x.Password == model.Password);
 
@@ -75,6 +76,8 @@ namespace FalcoBackEnd.Services.Implemetations
             {
                 return new ResponseDTO() { Code = 400, Message = $"User with email {user.Email} already exist in db", Status = "Error" };
             }
+
+            user.Password = hashService.Encrypt(user.Password);
 
             try
             {
