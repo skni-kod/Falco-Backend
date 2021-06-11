@@ -4,9 +4,10 @@ using System.Security.Claims;
 
 namespace FalcoBackEnd.Services.Interfaces
 {
-    public interface ITokenService
+    public interface IAuthService
     {
         AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model);
         string NewToken(User user);
+        ResponseDTO AddUser(UserDTO userDTO);
     }
 }

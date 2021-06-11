@@ -37,12 +37,14 @@ namespace FalcoBackEnd
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IHashService, HashService>();
             services.AddTransient<IUserService, UserService>();
 
             services.AddControllers();
-            
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FalcoBackEnd", Version = "v1" });

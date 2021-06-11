@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using FalcoBackEnd.Services.Interfaces;
 using FalcoBackEnd.ModelsDTO;
+using Microsoft.AspNetCore.Authorization;
+using FalcoBackEnd.Models;
 
 namespace FalcoBackEnd.Controllers
 {
@@ -12,12 +14,14 @@ namespace FalcoBackEnd.Controllers
     [Route("[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        private readonly ITokenService tokenService;
+        private readonly IAuthService tokenService;
 
-        public AuthenticateController(ITokenService tokenService)
+
+        public AuthenticateController(IAuthService tokenService)
         {
             this.tokenService = tokenService;
         }
+
         [HttpPost]
         public IActionResult Authenticate(AuthenticateRequestDTO model)
         {
@@ -28,6 +32,18 @@ namespace FalcoBackEnd.Controllers
                 return BadRequest(new { message = "Username or password is incorrect" });
             }
 
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public IActionResult Register([FromBody]UserDTO user)
+        {
+            var response = tokenService.AddUser(user);
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrng" });
+            }
             return Ok(response);
         }
     }

@@ -13,7 +13,7 @@ namespace FalcoBackEnd.Models
         {
         }
 
-        public DbSet<User> Users;
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

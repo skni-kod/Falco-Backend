@@ -13,15 +13,19 @@ using System.Threading.Tasks;
 
 namespace FalcoBackEnd.Services.Implemetations
 {
-    public class TokenService : ITokenService
+    public class AuthService : IAuthService
     {
         private readonly AppSettings appSettings;
         private readonly IHashService hashService;
+        private readonly FalcoDbContext falcoDbContext;
 
-        public TokenService(IOptions<AppSettings> appSettings, IHashService hashService)
+        public AuthService(IOptions<AppSettings> appSettings,
+                            IHashService hashService,
+                            FalcoDbContext falcoDbContext)
         {
             this.appSettings = appSettings.Value;
             this.hashService = hashService;
+            this.falcoDbContext = falcoDbContext;
         }
 
         private List<User> users = new List<User>
@@ -54,6 +58,21 @@ namespace FalcoBackEnd.Services.Implemetations
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtString = tokenHandler.WriteToken(token);
             return jwtString;
+        }
+
+        public ResponseDTO AddUser(UserDTO userDTO)
+        {
+            var newUser = new User { Email = userDTO.Email, FirstName = userDTO.FirstName, LastName = userDTO.LastName, Password = userDTO.Password, Id = userDTO.Id };
+            try
+            {
+                falcoDbContext.Users.Add(newUser);
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Failed" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Added user to DB", Status = "Success" };
         }
     }
 }
