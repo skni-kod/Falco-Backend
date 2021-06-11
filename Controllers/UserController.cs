@@ -21,7 +21,7 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsers()
+        public IActionResult GetAllUsers()
         {
             var response = userService.GetAll();
             if (response == null)

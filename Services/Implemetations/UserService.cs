@@ -48,9 +48,6 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public ResponseDTO EditUser(UserDTO user)
         {
-            //User newUser = new User() {Email = user.Email, FirstName = user.FirstName, LastName = user.LastName, Password = user.Password};
-
-
             if (falcoDbContext.Users.Where(u => u.Id == user.Id).Count() == 0)
             {
                 return new ResponseDTO() {Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
