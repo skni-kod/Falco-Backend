@@ -11,5 +11,7 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         IEnumerable<User> GetAll();
         User GetById(int id);
+        ResponseDTO EditUser(UserDTO user);
+        ResponseDTO DeleteUser(UserDTO user);
     }
 }

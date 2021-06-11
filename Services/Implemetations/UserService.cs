@@ -24,6 +24,50 @@ namespace FalcoBackEnd.Services.Implemetations
             this.logger = logger;
             this.mapper = mapper;
         }
+
+        public ResponseDTO DeleteUser(UserDTO user)
+        {
+            var result = falcoDbContext.Users.SingleOrDefault(u => u.Id == user.Id);
+
+            if (result == null)
+            {
+                return new ResponseDTO() { Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
+            }
+            try
+            {
+                falcoDbContext.Users.Remove(result);
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Succes" };
+        }
+
+        public ResponseDTO EditUser(UserDTO user)
+        {
+            //User newUser = new User() {Email = user.Email, FirstName = user.FirstName, LastName = user.LastName, Password = user.Password};
+
+
+            if (falcoDbContext.Users.Where(u => u.Id == user.Id).Count() == 0)
+            {
+                return new ResponseDTO() {Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
+            }
+            try
+            {
+                falcoDbContext.Users.Update(mapper.Map<UserDTO, User>(user));
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseDTO() {Code = 400, Message = e.Message, Status = "Error" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Edit user in db", Status = "Succes" };
+        }
+
         public IEnumerable<User> GetAll()
         {
             return falcoDbContext.Users;

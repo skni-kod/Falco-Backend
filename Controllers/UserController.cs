@@ -43,5 +43,27 @@ namespace FalcoBackEnd.Controllers
             return Ok(response);
         }
 
+        [HttpPut]
+        public IActionResult EditUser([FromBody]UserDTO user)
+        {
+            var response = userService.EditUser(user);
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrg" });
+            }
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteUser([FromBody] UserDTO user)
+        {
+            var response = userService.DeleteUser(user);
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrg" });
+            }
+            return Ok(response);
+        }
+
     }
 }
