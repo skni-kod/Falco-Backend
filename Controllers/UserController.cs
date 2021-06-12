@@ -11,8 +11,8 @@ using FalcoBackEnd.Models;
 namespace FalcoBackEnd.Controllers
 {
     [ApiController]
-    [Authorize]
-    [Route("[controller]")]
+    //[Authorize]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;

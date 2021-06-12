@@ -11,7 +11,6 @@ using FalcoBackEnd.Models;
 namespace FalcoBackEnd.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class AuthenticateController : ControllerBase
     {
         private readonly IAuthService tokenService;
@@ -23,6 +22,7 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
+        [Route("api/authenticate")]
         public IActionResult Authenticate(AuthenticateRequestDTO model)
         {
             var response = tokenService.Authenticate(model);
@@ -36,7 +36,7 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
+        [Route("api/register")]
         public IActionResult Register([FromBody]UserDTO user)
         {
             var response = tokenService.AddUser(user);
