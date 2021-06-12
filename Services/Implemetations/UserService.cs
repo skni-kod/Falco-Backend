@@ -52,7 +52,7 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             logger.LogInformation("Executing DeleteUser method");
 
-            if (falcoDbContext.Users.Where(u => u.Id == user.Id).Count() == 0)
+            if (!falcoDbContext.Users.Where(u => u.Id == user.Id).Any())
             {
                 return new ResponseDTO() {Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
             }
