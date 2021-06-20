@@ -51,6 +51,30 @@ namespace FalcoBackEnd.Services.Implemetations
             return new ResponseDTO() { Code = 200, Message = "Added conversation to Db", Status = "Succes" };
         }
 
+        public ResponseDTO DeleteConversation(int conversationID)
+        {
+            logger.LogInformation("Executing DeleteConversation method");
+
+            var result = falcoDbContext.Conversations.SingleOrDefault(u => u.Converastion_id == conversationID);
+
+            if (result == null)
+            {
+                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversationID} does not exist in db", Status = "Error" };
+            }
+
+            try
+            {
+                falcoDbContext.Conversations.Remove(result);
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
+        }
+
         public ResponseDTO EditConversation(ConversationDTO conversation)
         {
             logger.LogInformation("Executing EditConversation method");
