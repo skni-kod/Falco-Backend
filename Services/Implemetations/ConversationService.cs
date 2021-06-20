@@ -51,11 +51,11 @@ namespace FalcoBackEnd.Services.Implemetations
             return new ResponseDTO() { Code = 200, Message = "Added conversation to Db", Status = "Succes" };
         }
 
-        public ConversationDTO GetConversation(int conversationID)
+        public Conversation GetConversationByID(int conversationID)
         {
             logger.LogInformation("Executing GetConveration method");
 
-            throw new NotImplementedException();
+            return falcoDbContext.Conversations.SingleOrDefault(x => x.Converastion_id == conversationID);
         }
     }
 }

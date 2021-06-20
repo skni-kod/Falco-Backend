@@ -1,4 +1,5 @@
-﻿using FalcoBackEnd.ModelsDTO;
+﻿using FalcoBackEnd.Models;
+using FalcoBackEnd.ModelsDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace FalcoBackEnd.Services.Interfaces
 {
     public interface IConversationService
     {
-        ConversationDTO GetConversation(int conversationID);
+        Conversation GetConversationByID(int conversationID);
         ResponseDTO AddConversation(params int[] owners);
     }
 }
