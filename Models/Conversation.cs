@@ -9,6 +9,7 @@ namespace FalcoBackEnd.Models
     {
         public int Converastion_id { get; set; }
         public string Owners { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
 
     }
 }
