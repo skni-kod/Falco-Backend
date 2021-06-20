@@ -45,7 +45,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
                 return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
             }
-            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Succes" };
+            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
         }
 
         public ResponseDTO EditUser(UserDTO user)
@@ -66,7 +66,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
                 return new ResponseDTO() {Code = 400, Message = e.Message, Status = "Error" };
             }
-            return new ResponseDTO() { Code = 200, Message = "Edit user in db", Status = "Succes" };
+            return new ResponseDTO() { Code = 200, Message = "Edited user in db", Status = "Success" };
         }
 
         public IEnumerable<User> GetAllUsers()
