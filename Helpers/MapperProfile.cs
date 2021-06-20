@@ -12,6 +12,7 @@ namespace FalcoBackEnd.Models.Configuration
         public MapperProfile()
         {
             CreateMap<UserDTO, User>();
+            CreateMap<ConversationDTO, Conversation>();
         }
     }
 }
