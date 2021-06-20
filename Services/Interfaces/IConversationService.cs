@@ -11,5 +11,6 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         Conversation GetConversationByID(int conversationID);
         ResponseDTO AddConversation(params int[] owners);
+        ResponseDTO EditConversation(ConversationDTO conversation);
     }
 }

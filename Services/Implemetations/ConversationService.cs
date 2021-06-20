@@ -51,6 +51,27 @@ namespace FalcoBackEnd.Services.Implemetations
             return new ResponseDTO() { Code = 200, Message = "Added conversation to Db", Status = "Succes" };
         }
 
+        public ResponseDTO EditConversation(ConversationDTO conversation)
+        {
+            logger.LogInformation("Executing EditConversation method");
+
+            if (!falcoDbContext.Conversations.Where(x => x.Converastion_id == conversation.Converastion_id).Any())
+            {
+                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversation.Converastion_id} does not exist in db", Status = "Error" };
+            }
+
+            try
+            {
+                falcoDbContext.Conversations.Update(mapper.Map<ConversationDTO, Conversation>(conversation));
+                falcoDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
+            }
+            return new ResponseDTO() { Code = 200, Message = "Edited conversation in db", Status = "Success" };
+        }
+
         public Conversation GetConversationByID(int conversationID)
         {
             logger.LogInformation("Executing GetConveration method");
