@@ -10,7 +10,7 @@ namespace FalcoBackEnd.Services.Interfaces
     public interface IConversationService
     {
         Conversation GetConversationByID(int conversationID);
-        ResponseDTO AddConversation(params int[] owners);
+        ResponseDTO AddConversation(int[] owners);
         ResponseDTO EditConversation(ConversationDTO conversation);
         ResponseDTO DeleteConversation(int conversationID);
     }
