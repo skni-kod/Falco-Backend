@@ -25,7 +25,7 @@ namespace FalcoBackEnd.Services.Implemetations
             this.falcoDbContext = falcoDbContext;
         }
 
-        public ResponseDTO AddConversation(params int[] owners)
+        public ResponseDTO AddConversation(int[] owners)
         {
             logger.LogInformation("Executing AddConversation method");
 
