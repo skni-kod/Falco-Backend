@@ -1,4 +1,5 @@
-﻿using FalcoBackEnd.ModelsDTO;
+﻿using FalcoBackEnd.Helpers;
+using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,8 @@ using System.Threading.Tasks;
 namespace FalcoBackEnd.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
+    [AuthAttribute]
     [Route("api/[controller]")]
     public class ConversationController : ControllerBase
     {
@@ -39,7 +41,7 @@ namespace FalcoBackEnd.Controllers
             var response = conversationService.GetConversationByID(id);
             if (response == null)
             {
-                return BadRequest(new { message = "smthwrg"});
+                return BadRequest(new { message = "smthwrg" });
             }
             return Ok(response);
         }

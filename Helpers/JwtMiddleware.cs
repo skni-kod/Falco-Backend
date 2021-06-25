@@ -52,7 +52,7 @@ namespace FalcoBackEnd.Helpers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "nameid").Value);
 
                 context.Items["User"] = userService.GetUserById(userId);
 
