@@ -55,6 +55,18 @@ namespace FalcoBackEnd.Controllers
             return Ok(response);
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult EditConversation(int id, [FromBody] params int[] owners)
+        {
+            var response = conversationService.EditConversation(id, owners);
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrg" });
+            }
+            return Ok(response);
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public IActionResult DeleteConversation(int id)

@@ -89,7 +89,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
             string ownersString = NewOwnersString(owners);
 
-            ConversationDTO conversation = new ConversationDTO { Owners = ownersString };
+            ConversationDTO conversation = new ConversationDTO {Converastion_id = conversationID, Owners = ownersString };
 
             if (!falcoDbContext.Conversations.Where(x => x.Converastion_id == conversationID).Any())
             {
