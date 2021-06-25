@@ -25,17 +25,23 @@ namespace FalcoBackEnd.Services.Implemetations
             this.falcoDbContext = falcoDbContext;
         }
 
+        public string NewOwnersString(int[] owners)
+        {
+            string ownersString = "";
+            foreach (int owner in owners)
+            {
+                ownersString += owner.ToString() + " ";
+            }
+            return ownersString;
+        }
+
         public ResponseDTO AddConversation(int[] owners)
         {
             logger.LogInformation("Executing AddConversation method");
 
             if (owners.Length < 1) return new ResponseDTO() { Code = 400, Message = "You must provide a list of owners", Status = "Error" };
 
-            string ownersString = "";
-            foreach (int owner in owners)
-            {
-                ownersString += owner.ToString() + " ";
-            }
+            string ownersString = NewOwnersString(owners);
 
             ConversationDTO conversation = new ConversationDTO() { Owners = ownersString };
 
@@ -94,6 +100,13 @@ namespace FalcoBackEnd.Services.Implemetations
                 return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
             }
             return new ResponseDTO() { Code = 200, Message = "Edited conversation in db", Status = "Success" };
+        }
+
+        public IEnumerable<Conversation> GetAllConversations()
+        {
+            logger.LogInformation("Executing GetAllConversations method");
+
+            return falcoDbContext.Conversations;
         }
 
         public Conversation GetConversationByID(int conversationID)

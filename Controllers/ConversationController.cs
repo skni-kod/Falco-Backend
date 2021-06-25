@@ -22,8 +22,19 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetConversation()
+        {
+            var response = conversationService.GetAllConversations();
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrg" });
+            }
+            return Ok(response);
+        }
+
+        [HttpGet]
         [Route("{id}")]
-        public IActionResult GetConversation(int id)
+        public IActionResult GetConversationById(int id)
         {
             var response = conversationService.GetConversationByID(id);
             if (response == null)

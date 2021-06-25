@@ -71,7 +71,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public IEnumerable<User> GetAllUsers()
         {
-            logger.LogInformation("Executing DeleteUser method");
+            logger.LogInformation("Executing GetAllUsers method");
 
             return falcoDbContext.Users;
         }
