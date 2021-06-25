@@ -81,13 +81,19 @@ namespace FalcoBackEnd.Services.Implemetations
             return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
         }
 
-        public ResponseDTO EditConversation(ConversationDTO conversation)
+        public ResponseDTO EditConversation(int conversationID, int[] owners)
         {
             logger.LogInformation("Executing EditConversation method");
 
-            if (!falcoDbContext.Conversations.Where(x => x.Converastion_id == conversation.Converastion_id).Any())
+            if (owners.Length < 1) return new ResponseDTO() { Code = 400, Message = "You must provide a list of owners", Status = "Error" };
+
+            string ownersString = NewOwnersString(owners);
+
+            ConversationDTO conversation = new ConversationDTO { Owners = ownersString };
+
+            if (!falcoDbContext.Conversations.Where(x => x.Converastion_id == conversationID).Any())
             {
-                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversation.Converastion_id} does not exist in db", Status = "Error" };
+                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversationID} does not exist in db", Status = "Error" };
             }
 
             try

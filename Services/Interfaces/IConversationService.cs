@@ -12,7 +12,7 @@ namespace FalcoBackEnd.Services.Interfaces
         Conversation GetConversationByID(int conversationID);
         IEnumerable<Conversation> GetAllConversations();
         ResponseDTO AddConversation(int[] owners);
-        ResponseDTO EditConversation(ConversationDTO conversation);
+        ResponseDTO EditConversation(int conversationID, int[] owners);
         ResponseDTO DeleteConversation(int conversationID);
     }
 }
