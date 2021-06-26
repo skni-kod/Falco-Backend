@@ -101,11 +101,13 @@ namespace FalcoBackEnd.Services.Implemetations
             return falcoDbContext.Conversations;
         }
 
-        public Conversation GetConversationByID(int conversationID)
+        public ConversationDTO GetConversationByID(int conversationID)
         {
             logger.LogInformation("Executing GetConveration method");
 
-            return falcoDbContext.Conversations.SingleOrDefault(x => x.Converastion_id == conversationID);
+            Conversation conversation = falcoDbContext.Conversations.SingleOrDefault(x => x.Converastion_id == conversationID);
+
+            return new ConversationDTO(conversation.Owners) { Converastion_id = conversation.Converastion_id, Messages = conversation.Messages };
         }
     }
 }

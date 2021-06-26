@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FalcoBackEnd.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,11 +11,12 @@ namespace FalcoBackEnd.ModelsDTO
         public int Converastion_id { get; set; }
         public string Owners { get; set; }
         public int[] OwnersList { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
 
         public ConversationDTO(string OwnersString)
         {
             this.Owners = OwnersString;
-            this.OwnersList = OwnersString.Split(' ').Select(Int32.Parse).ToArray();
+            this.OwnersList = OwnersString.Split(' ').Select(int.Parse).ToArray();
         }
         public ConversationDTO(int[] OwnersList)
         {
@@ -24,6 +26,7 @@ namespace FalcoBackEnd.ModelsDTO
             {
                 ownersString += owner.ToString() + " ";
             }
+            ownersString = ownersString.TrimEnd();
             this.Owners = ownersString;
         }
     }
