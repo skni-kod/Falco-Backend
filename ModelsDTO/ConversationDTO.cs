@@ -9,5 +9,22 @@ namespace FalcoBackEnd.ModelsDTO
     {
         public int Converastion_id { get; set; }
         public string Owners { get; set; }
+        public int[] OwnersList { get; set; }
+
+        public ConversationDTO(string OwnersString)
+        {
+            this.Owners = OwnersString;
+            this.OwnersList = OwnersString.Split(' ').Select(Int32.Parse).ToArray();
+        }
+        public ConversationDTO(int[] OwnersList)
+        {
+            this.OwnersList = OwnersList;
+            string ownersString = "";
+            foreach (int owner in OwnersList)
+            {
+                ownersString += owner.ToString() + " ";
+            }
+            this.Owners = ownersString;
+        }
     }
 }
