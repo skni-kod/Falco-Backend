@@ -8,6 +8,6 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model);
         string NewToken(User user);
-        ResponseDTO AddUser(UserDTO userDTO);
+        AuthenticateResponseDTO AddUser(UserDTO userDTO);
     }
 }

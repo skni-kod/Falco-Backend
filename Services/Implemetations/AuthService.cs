@@ -68,27 +68,28 @@ namespace FalcoBackEnd.Services.Implemetations
             return jwtString;
         }
 
-        public ResponseDTO AddUser(UserDTO user)
+        public AuthenticateResponseDTO AddUser(UserDTO user)
         {
             logger.LogInformation("Executing AddUser method");
 
-            if (falcoDbContext.Users.Where(u => u.Email == user.Email).Count() != 0)
+            if (falcoDbContext.Users.Where(u => u.Email == user.Email).Any())
             {
-                return new ResponseDTO() { Code = 400, Message = $"User with email {user.Email} already exist in db", Status = "Error" };
+                throw new InvalidOperationException($"User with email {user.Email} already exist in db");
             }
 
-            user.Password = hashService.Encrypt(user.Password);
+            UserDTO newUser = new UserDTO { Email = user.Email, FirstName = user.FirstName, LastName = user.LastName, Password = user.Password };
+            newUser.Password = hashService.Encrypt(newUser.Password);
 
             try
             {
-                falcoDbContext.Users.Add(mapper.Map<UserDTO, User>(user));
+                var result = falcoDbContext.Users.Add(mapper.Map<UserDTO, User>(newUser));
                 falcoDbContext.SaveChanges();
             }
             catch (Exception e)
             {
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Failed" };
+                throw new InvalidOperationException(e.Message);
             }
-            return new ResponseDTO() { Code = 200, Message = "Added user to DB", Status = "Success" };
+            return Authenticate(new AuthenticateRequestDTO { Email = user.Email, Password = user.Password });
         }
     }
 }

@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace FalcoBackEnd.Controllers
 {
     [ApiController]
-    [Authorize]
-    [AuthAttribute]
+    //[Authorize]
+    //[AuthAttribute]
     [Route("api/[controller]")]
     public class ConversationController : ControllerBase
     {

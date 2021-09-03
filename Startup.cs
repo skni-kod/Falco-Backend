@@ -40,7 +40,7 @@ namespace FalcoBackEnd
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IHashService, HashService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IConversationService, ConversationService>();
+            //services.AddTransient<IConversationService, ConversationService>();
 
             services.AddControllers();
 
