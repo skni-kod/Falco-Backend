@@ -1,4 +1,5 @@
 ﻿using FalcoBackEnd.Helpers;
+using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -47,9 +48,13 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddConversation([FromBody]params int[] owners)
+        public async Task<IActionResult> AddConversation([FromBody] ICollection<User> users)
         {
-            var response = conversationService.AddConversation(owners);
+            Conversation conversation = new Conversation
+            {
+                Owners = users,
+            };
+            var response = await conversationService.AddConversation(conversation);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -59,9 +64,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult EditConversation(int id, [FromBody] params int[] owners)
+        public IActionResult EditConversation(int id, [FromBody] ICollection<User> users)
         {
-            var response = conversationService.EditConversation(id, owners);
+            var response = conversationService.EditConversation(id, users);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

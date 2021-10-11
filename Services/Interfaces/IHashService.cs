@@ -7,6 +7,6 @@ namespace FalcoBackEnd.Services.Interfaces
 {
     public interface IHashService
     {
-        string Encrypt(string password);
+        Task<string> Encrypt(string password);
     }
 }

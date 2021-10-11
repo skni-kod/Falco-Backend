@@ -2,6 +2,7 @@
 using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,89 +26,85 @@ namespace FalcoBackEnd.Services.Implemetations
             this.falcoDbContext = falcoDbContext;
         }
 
-        public ResponseDTO AddConversation(int[] owners)
+        public async Task<Conversation> AddConversation(Conversation conversation)
         {
             logger.LogInformation("Executing AddConversation method");
 
-            if (owners.Length < 1) return new ResponseDTO() { Code = 400, Message = "You must provide a list of owners", Status = "Error" };
+            await falcoDbContext.Conversations.AddAsync(conversation);
+            await falcoDbContext.SaveChangesAsync();
 
-            ConversationDTO conversation = new ConversationDTO(owners);
-
-            try
-            {
-                falcoDbContext.Conversations.Add(mapper.Map<ConversationDTO, Conversation>(conversation));
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Failed" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Added conversation to Db", Status = "Succes" };
+            return conversation;
         }
 
-        public ResponseDTO DeleteConversation(int conversationID)
+        public async Task<Conversation> DeleteConversation(int conversationID)
         {
             logger.LogInformation("Executing DeleteConversation method");
 
-            var result = falcoDbContext.Conversations.SingleOrDefault(u => u.Converastion_id == conversationID);
+            var conversation = await falcoDbContext.Conversations.SingleOrDefaultAsync(u => u.Converastion_id == conversationID);
+            falcoDbContext.Conversations.Remove(conversation);
+            await falcoDbContext.SaveChangesAsync();
 
-            if (result == null)
-            {
-                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversationID} does not exist in db", Status = "Error" };
-            }
-
-            try
-            {
-                falcoDbContext.Conversations.Remove(result);
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
+            return conversation;
         }
+        
 
-        public ResponseDTO EditConversation(int conversationID, int[] owners)
+        public async Task<Conversation> EditConversation(int conversationID, ICollection<User> users)
         {
             logger.LogInformation("Executing EditConversation method");
 
-            if (owners.Length < 1) return new ResponseDTO() { Code = 400, Message = "You must provide a list of owners", Status = "Error" };
+            if (!users.Any()) return null;
 
-            ConversationDTO conversation = new ConversationDTO(owners) {Converastion_id = conversationID};
+            Conversation conversation = await falcoDbContext.Conversations
+                .SingleOrDefaultAsync(x => x.Converastion_id == conversationID);
 
-            if (!falcoDbContext.Conversations.Where(x => x.Converastion_id == conversationID).Any())
-            {
-                return new ResponseDTO() { Code = 400, Message = $"Conversation with id {conversationID} does not exist in db", Status = "Error" };
-            }
+            conversation.Owners = users;
+            falcoDbContext.Conversations.Update(conversation);
+            await falcoDbContext.SaveChangesAsync();
 
-            try
-            {
-                falcoDbContext.Conversations.Update(mapper.Map<ConversationDTO, Conversation>(conversation));
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Edited conversation in db", Status = "Success" };
+            return conversation;
         }
 
-        public IEnumerable<Conversation> GetAllConversations()
+        public async Task<IEnumerable<ConversationInfoDto>> GetAllConversations()
         {
             logger.LogInformation("Executing GetAllConversations method");
 
-            return falcoDbContext.Conversations;
+            var conversations = await falcoDbContext.Conversations
+                .Select(x => new ConversationInfoDto
+                {
+                    Converastion_id = x.Converastion_id,
+                    Messages = x.Messages,
+                    Owners = x.Owners.Select(o => new UserInfoDto
+                    {
+                        Id = o.Id,
+                        FirstName = o.FirstName,
+                        LastName = o.LastName
+                    }),
+                })
+                .ToListAsync();
+
+            return conversations;
         }
 
-        public ConversationDTO GetConversationByID(int conversationID)
+        public async Task<ConversationInfoDto> GetConversationByID(int conversationID)
         {
             logger.LogInformation("Executing GetConveration method");
 
-            Conversation conversation = falcoDbContext.Conversations.SingleOrDefault(x => x.Converastion_id == conversationID);
+            ConversationInfoDto conversation = await falcoDbContext.Conversations
+                .Select(x => new ConversationInfoDto
+                {
+                    Converastion_id = x.Converastion_id,
+                    Messages = x.Messages,
+                    Owners = x.Owners.Select(o => new UserInfoDto
+                    {
+                        Id = o.Id,
+                        FirstName = o.FirstName,
+                        LastName = o.LastName
+                    }),
+                })
+                .SingleOrDefaultAsync(x => x.Converastion_id == conversationID);
 
-            return new ConversationDTO(conversation.Owners) { Converastion_id = conversation.Converastion_id, Messages = conversation.Messages };
+
+            return  conversation;
         }
     }
 }
