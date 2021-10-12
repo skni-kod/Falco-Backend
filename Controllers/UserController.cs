@@ -22,8 +22,15 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] User user)
+        public async Task<IActionResult> AddUser([FromBody] AddUserDto userDTO)
         {
+            User user = new User
+            {
+                FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
+                Email = userDTO.Email,
+                Password = userDTO.Password
+            };
             var response = await userService.AddUser(user);
             if (response == null)
             {
