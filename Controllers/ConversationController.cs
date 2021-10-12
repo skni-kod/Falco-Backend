@@ -25,9 +25,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetConversation()
+        public async Task<IActionResult> GetConversation()
         {
-            var response = conversationService.GetAllConversations();
+            var response = await conversationService.GetAllConversations();
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -37,9 +37,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetConversationById(int id)
+        public async Task<IActionResult> GetConversationById(int id)
         {
-            var response = conversationService.GetConversationByID(id);
+            var response = await conversationService.GetConversationByID(id);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -64,9 +64,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult EditConversation(int id, [FromBody] ICollection<User> users)
+        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<User> users)
         {
-            var response = conversationService.EditConversation(id, users);
+            var response = await conversationService.EditConversation(id, users);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -75,10 +75,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteConversation(int id)
+        [Route("{userID}")]
+        public async Task<IActionResult> DeleteConversation(int userID)
         {
-            var response = conversationService.DeleteConversation(id);
+            var response = await conversationService .DeleteConversation(userID);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

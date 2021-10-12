@@ -53,8 +53,6 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             logger.LogInformation("Executing EditConversation method");
 
-            if (!users.Any()) return null; //trzeba sie zastanowić nad global exception handling
-
             Conversation conversation = await falcoDbContext.Conversations
                 .SingleOrDefaultAsync(x => x.ConverastionId == conversationID);
 
@@ -79,7 +77,7 @@ namespace FalcoBackEnd.Services.Implemetations
                         Author_id = m.Author_id,
                         Conversation_id = m.Conversation_id,
                         Content = m.Content,
-                        //CreateDate = m.CreateDate,
+                        CreateDate = m.CreateDate,
                     }
                     ),
                     Owners = x.Owners.Select(o => new UserInfoDto
@@ -108,7 +106,7 @@ namespace FalcoBackEnd.Services.Implemetations
                         Author_id = m.Author_id,
                         Conversation_id = m.Conversation_id,
                         Content = m.Content,
-                        //CreateDate = m.CreateDate,
+                        CreateDate = m.CreateDate,
                     }
                     ),
                     Owners = x.Owners.Select(o => new UserInfoDto

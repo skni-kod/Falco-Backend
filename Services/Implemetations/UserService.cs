@@ -26,58 +26,72 @@ namespace FalcoBackEnd.Services.Implemetations
             this.mapper = mapper;
         }
 
-        public async Task<ResponseDTO> DeleteUser(UserDTO userDto)
+        public async Task<UserDTO> AddUser(User user)
+        {
+            falcoDbContext.Users.Add(user);
+            await falcoDbContext.SaveChangesAsync();
+
+            return mapper.Map<UserDTO>(user); ;
+        }
+
+        public async Task<UserInfoDto> DeleteUser(UserDTO userDto)
         {
             logger.LogInformation("Executing DeleteUser method");
 
             var result = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userDto.Id);
-
-            if (result == null)
-            {
-                return new ResponseDTO() { Code = 400, Message = $"User with email {userDto.Email} does not exist in db", Status = "Error" };
-            }
             falcoDbContext.Users.Remove(result);
             await falcoDbContext.SaveChangesAsync();
- 
-            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
+
+            return mapper.Map<UserInfoDto>(result);
         }
 
-        public async Task<ResponseDTO> EditUser(UserDTO userDto)
+        public async Task<UserDTO> EditUser(UserDTO userDto)
         {
             logger.LogInformation("Executing DeleteUser method");
 
             var user = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userDto.Id);
 
-            if (user != null)
-            {
-                return new ResponseDTO() {Code = 400, Message = $"User with email {userDto.Email} does not exist in db", Status = "Error" };
-            }
-
-            //  We dont wont mapper in Update method
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
             user.Email = userDto.Email;
             user.Password = userDto.Password;
 
-
             falcoDbContext.Users.Update(user);
             await falcoDbContext.SaveChangesAsync();
 
-            return new ResponseDTO() { Code = 200, Message = "Edited user in db", Status = "Success" };
+            return mapper.Map<UserDTO>(user);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<UserInfoDto>> GetAllUsers()
         {
             logger.LogInformation("Executing GetAllUsers method");
 
-            return await falcoDbContext.Users.ToListAsync();
+            var users =  await falcoDbContext.Users
+                .Select( u => new UserInfoDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .ToListAsync();
+
+            return users;
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<UserInfoDto> GetUserById(int id)
         {
             logger.LogInformation("Executing GetUserById method");
 
-            return await falcoDbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            var user = await falcoDbContext.Users
+                .Select(u => new UserInfoDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            return user;
         }
     }
 }

@@ -21,10 +21,21 @@ namespace FalcoBackEnd.Controllers
             this.userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult GetAllUsers()
+        [HttpPost]
+        public async Task<IActionResult> AddUser([FromBody] User user)
         {
-            var response = userService.GetAllUsers();
+            var response = await userService.AddUser(user);
+            if (response == null)
+            {
+                return BadRequest(new { message = "smthwrng" });
+            }
+            return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var response = await userService.GetAllUsers();
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
@@ -34,9 +45,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            var response = userService.GetUserById(id);
+            var response = await userService.GetUserById(id);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
@@ -45,9 +56,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditUser([FromBody]UserDTO user)
+        public async Task<IActionResult> EditUser([FromBody]UserDTO user)
         {
-            var response = userService.EditUser(user);
+            var response = await userService.EditUser(user);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -56,9 +67,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteUser([FromBody] UserDTO user)
+        public async Task<IActionResult> DeleteUser([FromBody] UserDTO user)
         {
-            var response = userService.DeleteUser(user);
+            var response = await userService.DeleteUser(user);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

@@ -9,9 +9,10 @@ namespace FalcoBackEnd.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAllUsers();
-        Task<User> GetUserById(int id);
-        Task<ResponseDTO> EditUser(UserDTO userDto);
-        Task<ResponseDTO> DeleteUser(UserDTO user);
+        Task<UserDTO> AddUser(User user);
+        Task<IEnumerable<UserInfoDto>> GetAllUsers();
+        Task<UserInfoDto> GetUserById(int id);
+        Task<UserDTO> EditUser(UserDTO userDto);
+        Task<UserInfoDto> DeleteUser(UserDTO user);
     }
 }
