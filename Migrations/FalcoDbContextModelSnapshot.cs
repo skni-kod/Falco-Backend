@@ -19,18 +19,29 @@ namespace FalcoBackEnd.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ConversationUser", b =>
+                {
+                    b.Property<int>("ConversationsConverastionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OwnersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ConversationsConverastionId", "OwnersId");
+
+                    b.HasIndex("OwnersId");
+
+                    b.ToTable("ConversationUser");
+                });
+
             modelBuilder.Entity("FalcoBackEnd.Models.Conversation", b =>
                 {
-                    b.Property<int>("Converastion_id")
+                    b.Property<int>("ConverastionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Owners")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Converastion_id");
+                    b.HasKey("ConverastionId");
 
                     b.ToTable("Conversations");
                 });
@@ -46,8 +57,10 @@ namespace FalcoBackEnd.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationConverastionId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Conversation_id")
                         .HasColumnType("int");
@@ -57,7 +70,7 @@ namespace FalcoBackEnd.Migrations
 
                     b.HasKey("Message_id");
 
-                    b.HasIndex("Conversation_id");
+                    b.HasIndex("ConversationConverastionId");
 
                     b.ToTable("Messages");
                 });
@@ -70,7 +83,6 @@ namespace FalcoBackEnd.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -80,7 +92,6 @@ namespace FalcoBackEnd.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -88,13 +99,26 @@ namespace FalcoBackEnd.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ConversationUser", b =>
+                {
+                    b.HasOne("FalcoBackEnd.Models.Conversation", null)
+                        .WithMany()
+                        .HasForeignKey("ConversationsConverastionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FalcoBackEnd.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FalcoBackEnd.Models.Message", b =>
                 {
                     b.HasOne("FalcoBackEnd.Models.Conversation", "Conversation")
                         .WithMany("Messages")
-                        .HasForeignKey("Conversation_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ConversationConverastionId");
 
                     b.Navigation("Conversation");
                 });

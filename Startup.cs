@@ -55,6 +55,7 @@ namespace FalcoBackEnd
             });
 
             services.AddControllers();
+            services.AddScoped<IConversationService, ConversationService>();
 
             services.AddAutoMapper(typeof(Startup));
 

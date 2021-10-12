@@ -11,8 +11,8 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         Task<ConversationInfoDto> GetConversationByID(int conversationID);
         Task<IEnumerable<ConversationInfoDto>> GetAllConversations();
-        Task<Conversation> AddConversation(Conversation conversation);
-        Task<Conversation> EditConversation(int conversationID, ICollection<User> users);
-        Task<Conversation> DeleteConversation(int conversationID);
+        Task<ConversationInfoDto> AddConversation(Conversation conversation);
+        Task<ConversationInfoDto> EditConversation(int conversationID, ICollection<User> users);
+        Task<ConversationInfoDto> DeleteConversation(int conversationID);
     }
 }

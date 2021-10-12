@@ -11,6 +11,8 @@ namespace FalcoBackEnd.ModelsDTO
         public int Conversation_id { get; set; }
         public int Author_id { get; set; }
         public string Content { get; set; }
-        public DateTime CreateDate { get; set; }
+        //public DateTime CreateDate { get; set; }
+
+
     }
 }

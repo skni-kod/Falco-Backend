@@ -23,7 +23,7 @@ namespace FalcoBackEnd.Migrations
 
             modelBuilder.Entity("FalcoBackEnd.Models.Conversation", b =>
                 {
-                    b.Property<int>("Converastion_id")
+                    b.Property<int>("ConverastionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -32,7 +32,7 @@ namespace FalcoBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Converastion_id");
+                    b.HasKey("ConverastionId");
 
                     b.ToTable("Conversations");
                 });
@@ -51,7 +51,7 @@ namespace FalcoBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ConversationConverastion_id")
+                    b.Property<int?>("ConversationConverastionId")
                         .HasColumnType("int");
 
                     b.Property<int>("Conversation_id")
@@ -62,7 +62,7 @@ namespace FalcoBackEnd.Migrations
 
                     b.HasKey("Message_id");
 
-                    b.HasIndex("ConversationConverastion_id");
+                    b.HasIndex("ConversationConverastionId");
 
                     b.ToTable("Messages");
                 });
@@ -97,7 +97,7 @@ namespace FalcoBackEnd.Migrations
                 {
                     b.HasOne("FalcoBackEnd.Models.Conversation", null)
                         .WithMany("Messages")
-                        .HasForeignKey("ConversationConverastion_id");
+                        .HasForeignKey("ConversationConverastionId");
                 });
 
             modelBuilder.Entity("FalcoBackEnd.Models.Conversation", b =>

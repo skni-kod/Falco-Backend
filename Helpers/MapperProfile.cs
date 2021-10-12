@@ -13,6 +13,7 @@ namespace FalcoBackEnd.Models.Configuration
         {
             CreateMap<UserDTO, User>();
             CreateMap<ConversationDTO, Conversation>();
+            CreateMap<Conversation, ConversationInfoDto>();
         }
     }
 }

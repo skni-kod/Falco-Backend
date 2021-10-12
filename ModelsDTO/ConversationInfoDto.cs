@@ -8,8 +8,8 @@ namespace FalcoBackEnd.ModelsDTO
 {
     public class ConversationInfoDto
     {
-        public int Converastion_id { get; set; }
+        public int ConverastionId { get; set; }
         public IEnumerable<UserInfoDto> Owners { get; set; }
-        public virtual ICollection<Message> Messages { get; set; }
+        public virtual IEnumerable<MessageDTO> Messages { get; set; }
     }
 }

@@ -24,7 +24,12 @@ namespace FalcoBackEnd.Models
             //modelBuilder.ApplyConfiguration(new MessageConfiguration());
             //base.OnModelCreating(modelBuilder);
 
-            
+            modelBuilder.Entity<Conversation>()
+                .HasKey(k => k.ConverastionId);
+
+            modelBuilder.Entity<Message>()
+                .HasKey(k => k.Message_id);
+
         }
     }
 }

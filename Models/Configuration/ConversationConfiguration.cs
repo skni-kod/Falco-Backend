@@ -11,7 +11,7 @@ namespace FalcoBackEnd.Models.Configuration
     {
         public void Configure(EntityTypeBuilder<Conversation> builder)
         {
-            builder.HasKey(b => b.Converastion_id);
+            builder.HasKey(b => b.ConverastionId);
             builder.Property(b => b.Owners).IsRequired();
         }
     }
