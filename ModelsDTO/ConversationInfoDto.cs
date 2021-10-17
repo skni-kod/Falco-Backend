@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FalcoBackEnd.ModelsDTO
 {
-    public class ConversationInfoDto
+    public class ConversationInfoDTO
     {
         public int ConverastionId { get; set; }
-        public IEnumerable<UserInfoDto> Owners { get; set; }
+        public IEnumerable<UserConversation> Owners { get; set; }
         public virtual IEnumerable<MessageDTO> Messages { get; set; }
     }
 }

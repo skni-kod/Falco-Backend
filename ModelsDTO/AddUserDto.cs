@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FalcoBackEnd.ModelsDTO
 {
-    public class AddUserDto
+    public class AddUserDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

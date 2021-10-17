@@ -46,7 +46,7 @@ namespace FalcoBackEnd.Services.Implemetations
             var user = await falcoDbContext.Users.
                 SingleOrDefaultAsync(x => x.Email == model.Email && x.Password == model.Password);
 
-            if (user == null) return null;
+            if (user == null)  return null;
 
             var token = await NewToken(user);
 
@@ -71,27 +71,27 @@ namespace FalcoBackEnd.Services.Implemetations
             return jwtString;
         }
 
-        public async Task<AuthenticateResponseDTO> AddUser(UserDTO userDto)
+        public async Task<AuthenticateResponseDTO> AddUser(AddUserDTO AddUserDTO)
         {
             logger.LogInformation("Executing AddUser method");
-            var user = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Email == userDto.Email);
-            if (user != null)
+            var checkUser = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Email == AddUserDTO.Email);
+            if (checkUser != null)
             {
                 return null;
             }
-
-            UserDTO newUser = new UserDTO {
-                Email = userDto.Email,
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                Password = userDto.Password 
+            AddUserDTO newUser = new AddUserDTO
+            {
+                Email = AddUserDTO.Email,
+                FirstName = AddUserDTO.FirstName,
+                LastName = AddUserDTO.LastName,
+                Password = AddUserDTO.Password
             };
-            newUser.Password = await hashService.Encrypt(newUser.Password);
-
-            var result = falcoDbContext.Users.Add(mapper.Map<UserDTO, User>(newUser));
+            newUser.Password = await hashService.Encrypt(AddUserDTO.Password);
+            var user = mapper.Map<AddUserDTO, User>(newUser);
+            var result = falcoDbContext.Users.Add(user);
             await falcoDbContext.SaveChangesAsync();
 
-            return await Authenticate(new AuthenticateRequestDTO { Email = user.Email, Password = user.Password });
+            return await Authenticate(new AuthenticateRequestDTO { Email = AddUserDTO.Email, Password = AddUserDTO.Password });
         }
     }
 }

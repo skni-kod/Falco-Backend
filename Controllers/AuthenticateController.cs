@@ -23,9 +23,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPost]
         [Route("api/authenticate")]
-        public IActionResult Authenticate(AuthenticateRequestDTO model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequestDTO model)
         {
-            var response = tokenService.Authenticate(model);
+            var response = await tokenService.Authenticate(model);
 
             if (response == null)
             {
@@ -37,9 +37,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPost]
         [Route("api/register")]
-        public IActionResult Register([FromBody]UserDTO user)
+        public async Task<IActionResult> Register([FromBody] AddUserDTO AddUserDTO)
         {
-            var response = tokenService.AddUser(user);
+            var response = await tokenService.AddUser(AddUserDTO);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });

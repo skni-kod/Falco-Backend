@@ -16,6 +16,7 @@ namespace FalcoBackEnd.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<UserConversation> UserConversations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,18 @@ namespace FalcoBackEnd.Models
             modelBuilder.Entity<Message>()
                 .HasKey(k => k.Message_id);
 
+            modelBuilder.Entity<UserConversation>()
+                .HasKey(uc => new { uc.UserId, uc.ConversationId });
+            modelBuilder.Entity<UserConversation>()
+                .HasOne(uc => uc.User)
+                .WithMany(u => u.Conversations)
+                .HasForeignKey(uc => uc.UserId);
+            modelBuilder.Entity<UserConversation>()
+                .HasOne(uc => uc.Conversation)
+                .WithMany(c => c.Owners)
+                .HasForeignKey(uc => uc.ConversationId);
         }
+
     }
 }
+

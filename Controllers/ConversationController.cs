@@ -1,4 +1,5 @@
-﻿using FalcoBackEnd.Helpers;
+﻿using AutoMapper;
+using FalcoBackEnd.Helpers;
 using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
@@ -18,10 +19,12 @@ namespace FalcoBackEnd.Controllers
     public class ConversationController : ControllerBase
     {
         private readonly IConversationService conversationService;
+        private readonly IMapper mapper;
 
-        public ConversationController(IConversationService conversationService)
+        public ConversationController(IConversationService conversationService, IMapper mapper)
         {
             this.conversationService = conversationService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -48,13 +51,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddConversation([FromBody] ICollection<User> users)
+        public async Task<IActionResult> AddConversation([FromBody] ICollection<AddConversationDTO> users)
         {
-            Conversation conversation = new Conversation
-            {
-                Owners = users,
-            };
-            var response = await conversationService.AddConversation(conversation);
+            var response = await conversationService.AddConversation(users);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -64,7 +63,7 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<User> users)
+        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<int> users)
         {
             var response = await conversationService.EditConversation(id, users);
             if (response == null)
@@ -75,10 +74,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        [Route("{userID}")]
-        public async Task<IActionResult> DeleteConversation(int userID)
+        [Route("{conversationID}")]
+        public async Task<IActionResult> DeleteConversation(int conversationID)
         {
-            var response = await conversationService .DeleteConversation(userID);
+            var response = await conversationService.DeleteConversation(conversationID);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

@@ -16,33 +16,29 @@ namespace FalcoBackEnd.Services.Implemetations
         private readonly FalcoDbContext falcoDbContext;
         private readonly ILogger logger;
         private readonly IMapper mapper;
+        private readonly IHashService hashService;
 
         public UserService(FalcoDbContext falcoDbContext,
                             ILogger<UserService> logger,
-                            IMapper mapper)
+                            IMapper mapper,
+                            IHashService hashService)
         {
             this.falcoDbContext = falcoDbContext;
             this.logger = logger;
             this.mapper = mapper;
+            this.hashService = hashService;
         }
 
-        public async Task<UserDTO> AddUser(User user)
-        {
-            falcoDbContext.Users.Add(user);
-            await falcoDbContext.SaveChangesAsync();
-
-            return mapper.Map<UserDTO>(user); ;
-        }
-
-        public async Task<UserInfoDto> DeleteUser(UserDTO userDto)
+        public async Task<UserInfoDTO> DeleteUser(int userId)
         {
             logger.LogInformation("Executing DeleteUser method");
 
-            var result = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userDto.Id);
+            var result = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            if (result == null) return null;
             falcoDbContext.Users.Remove(result);
             await falcoDbContext.SaveChangesAsync();
 
-            return mapper.Map<UserInfoDto>(result);
+            return mapper.Map<UserInfoDTO>(result);
         }
 
         public async Task<UserDTO> EditUser(UserDTO userDto)
@@ -54,7 +50,7 @@ namespace FalcoBackEnd.Services.Implemetations
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
             user.Email = userDto.Email;
-            user.Password = userDto.Password;
+            user.Password = await hashService.Encrypt(userDto.Password);
 
             falcoDbContext.Users.Update(user);
             await falcoDbContext.SaveChangesAsync();
@@ -62,12 +58,12 @@ namespace FalcoBackEnd.Services.Implemetations
             return mapper.Map<UserDTO>(user);
         }
 
-        public async Task<IEnumerable<UserInfoDto>> GetAllUsers()
+        public async Task<IEnumerable<UserInfoDTO>> GetAllUsers()
         {
             logger.LogInformation("Executing GetAllUsers method");
 
             var users =  await falcoDbContext.Users
-                .Select( u => new UserInfoDto
+                .Select( u => new UserInfoDTO
                 {
                     Id = u.Id,
                     FirstName = u.FirstName,
@@ -78,12 +74,12 @@ namespace FalcoBackEnd.Services.Implemetations
             return users;
         }
 
-        public async Task<UserInfoDto> GetUserById(int id)
+        public async Task<UserInfoDTO> GetUserById(int id)
         {
             logger.LogInformation("Executing GetUserById method");
 
             var user = await falcoDbContext.Users
-                .Select(u => new UserInfoDto
+                .Select(u => new UserInfoDTO
                 {
                     Id = u.Id,
                     FirstName = u.FirstName,

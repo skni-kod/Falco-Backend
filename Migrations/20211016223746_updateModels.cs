@@ -49,24 +49,24 @@ namespace FalcoBackEnd.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "ConversationUser",
+                name: "UserConversations",
                 columns: table => new
                 {
-                    ConversationsConverastionId = table.Column<int>(type: "int", nullable: false),
-                    OwnersId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ConversationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConversationUser", x => new { x.ConversationsConverastionId, x.OwnersId });
+                    table.PrimaryKey("PK_UserConversations", x => new { x.UserId, x.ConversationId });
                     table.ForeignKey(
-                        name: "FK_ConversationUser_Conversations_ConversationsConverastionId",
-                        column: x => x.ConversationsConverastionId,
+                        name: "FK_UserConversations_Conversations_ConversationId",
+                        column: x => x.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "ConverastionId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ConversationUser_Users_OwnersId",
-                        column: x => x.OwnersId,
+                        name: "FK_UserConversations_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -78,9 +78,9 @@ namespace FalcoBackEnd.Migrations
                 column: "ConversationConverastionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConversationUser_OwnersId",
-                table: "ConversationUser",
-                column: "OwnersId");
+                name: "IX_UserConversations_ConversationId",
+                table: "UserConversations",
+                column: "ConversationId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Messages_Conversations_ConversationConverastionId",
@@ -98,7 +98,7 @@ namespace FalcoBackEnd.Migrations
                 table: "Messages");
 
             migrationBuilder.DropTable(
-                name: "ConversationUser");
+                name: "UserConversations");
 
             migrationBuilder.DropIndex(
                 name: "IX_Messages_ConversationConverastionId",

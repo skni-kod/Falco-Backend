@@ -21,24 +21,6 @@ namespace FalcoBackEnd.Controllers
             this.userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] AddUserDto userDTO)
-        {
-            User user = new User
-            {
-                FirstName = userDTO.FirstName,
-                LastName = userDTO.LastName,
-                Email = userDTO.Email,
-                Password = userDTO.Password
-            };
-            var response = await userService.AddUser(user);
-            if (response == null)
-            {
-                return BadRequest(new { message = "smthwrng" });
-            }
-            return Ok(response);
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -74,9 +56,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteUser([FromBody] UserDTO user)
+        [Route("{userId}")]
+        public async Task<IActionResult> DeleteUser( int userId)
         {
-            var response = await userService.DeleteUser(user);
+            var response = await userService.DeleteUser(userId);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

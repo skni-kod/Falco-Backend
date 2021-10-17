@@ -16,7 +16,7 @@ namespace FalcoBackEnd.Models
         public string Email { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
-        public ICollection<Conversation> Conversations { get; set; }
+        public ICollection<UserConversation> Conversations { get; set; }
 
     }
 }

@@ -11,6 +11,6 @@ namespace FalcoBackEnd.Services.Interfaces
     {
         Task<AuthenticateResponseDTO> Authenticate(AuthenticateRequestDTO model);
         Task<string> NewToken(User user);
-        Task<AuthenticateResponseDTO> AddUser(UserDTO userDTO);
+        Task<AuthenticateResponseDTO> AddUser(AddUserDTO AddUserDTO);
     }
 }
