@@ -63,7 +63,7 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<int> users)
+        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<AddConversationDTO> users)
         {
             var response = await conversationService.EditConversation(id, users);
             if (response == null)

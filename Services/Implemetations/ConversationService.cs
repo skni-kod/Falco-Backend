@@ -34,15 +34,24 @@ namespace FalcoBackEnd.Services.Implemetations
                     UserId = x.Id
                 }).ToList()
             };
-            //foreach (var x in users)
-            //{
-            //    conversation.Owners.Add(new UserConversation() { UserId = x.Id });
-            //}
+
             logger.LogInformation("Executing AddConversation method");
             falcoDbContext.Conversations.Add(conversation);
             await falcoDbContext.SaveChangesAsync();
 
-            return mapper.Map<ConversationInfoDTO>(conversation);
+            if (conversation.ConverastionId == 0) return null;
+
+            var conversationToReturn = new ConversationInfoDTO
+            {
+                ConverastionId = conversation.ConverastionId,
+                Owners = conversation.Owners.Select( x => new UserConversation
+                {
+                    UserId = x.UserId,
+                    ConversationId = x.ConversationId
+                })
+            };
+
+            return conversationToReturn;
          }
 
         public async Task<ConversationInfoDTO> DeleteConversation(int conversationID)
@@ -50,26 +59,78 @@ namespace FalcoBackEnd.Services.Implemetations
             logger.LogInformation("Executing DeleteConversation method");
 
             var conversation = await falcoDbContext.Conversations
+                .Include(x => x.Owners)
                 .SingleOrDefaultAsync(u => u.ConverastionId == conversationID);
+
+            var conversationToReturn = new ConversationInfoDTO
+            {
+                ConverastionId = conversation.ConverastionId,
+                Owners = conversation.Owners.Select(x => new UserConversation
+                {
+                    UserId = x.UserId,
+                    ConversationId = x.ConversationId
+                })
+            };
 
             falcoDbContext.Conversations.Remove(conversation);
             await falcoDbContext.SaveChangesAsync();
 
-            return mapper.Map<ConversationInfoDTO>(conversation);
+            return conversationToReturn;
         }
         
 
-        public async Task<ConversationInfoDTO> EditConversation(int id, ICollection<int> users)
+        public async Task<ConversationInfoDTO> EditConversation(int id, ICollection<AddConversationDTO> users)
         {
-            logger.LogInformation("Executing EditConversation method");
+            logger.LogInformation("Executing EditConversation method");      
 
             Conversation conversation = await falcoDbContext.Conversations
+                .Select(x => new Conversation
+                {
+                    ConverastionId = x.ConverastionId,
+                    Messages = x.Messages,
+                    Owners = x.Owners.Select(userConversation => new UserConversation
+                    {
+                        UserId = userConversation.UserId,
+                        ConversationId = userConversation.ConversationId,
+                    }).ToList(),
+                })
                 .SingleOrDefaultAsync(x => x.ConverastionId == id);
+
+            ICollection<UserConversation> owners = users.Select(x => new UserConversation
+            {
+                UserId = x.Id,
+                ConversationId = id
+            }).ToList();
+
+            if (conversation.Owners.Any())
+            {
+                ICollection<UserConversation> oldUsers = conversation.Owners.Where(x => owners.All(i => i.UserId != x.UserId)).ToList();
+                ICollection<UserConversation> newUsers = owners.Where(x => conversation.Owners.All(i => i.UserId != x.UserId)).ToList();
+                falcoDbContext.UserConversations.AddRange(newUsers);
+                falcoDbContext.UserConversations.RemoveRange(oldUsers);
+            }
+            else
+            {
+                conversation.Owners = users.Select(x => new UserConversation
+                   {
+                       UserId = x.Id
+                   }).ToList();
+            }
 
             falcoDbContext.Conversations.Update(conversation);
             await falcoDbContext.SaveChangesAsync();
 
-            return mapper.Map<ConversationInfoDTO>(conversation); ;
+            var conversationToReturn = new ConversationInfoDTO
+            {
+                ConverastionId = conversation.ConverastionId,
+                Owners = conversation.Owners.Select(x => new UserConversation
+                {
+                    UserId = x.UserId,
+                    ConversationId = x.ConversationId
+                })
+            };
+
+            return conversationToReturn; 
         }
 
         public async Task<IEnumerable<ConversationInfoDTO>> GetAllConversations()
@@ -89,19 +150,6 @@ namespace FalcoBackEnd.Services.Implemetations
                         CreateDate = m.CreateDate,
                     }
                     ),
-                    //Owners = x.Owners.Select(o => new UserInfoDTO
-                    //{
-                    //    Id = o.Id,
-                    //    FirstName = o.FirstName,
-                    //    LastName = o.LastName
-                    //}),
-
-                    //Owners = x.Owners.Select(users => new UserInfoDTO
-                    //{
-                    //    Id = users.User.Id,
-                    //    FirstName = users.User.FirstName,
-                    //    LastName = users.User.LastName
-                    //}),
                     Owners = x.Owners.Select(userConversation => new UserConversation{
                           UserId = userConversation.UserId,
                           ConversationId = userConversation.ConversationId,
@@ -130,22 +178,10 @@ namespace FalcoBackEnd.Services.Implemetations
                         CreateDate = m.CreateDate,
                     }
                     ),
-                    //Owners = x.Owners.Select(o => new UserInfoDTO
-                    //{
-                    //    Id = o.Id,
-                    //    FirstName = o.FirstName,
-                    //    LastName = o.LastName
-                    //}),
-
-                    //Owners = x.Owners.Select(users => new UserInfoDTO
-                    //{
-                    //    Id = users.User.Id,
-                    //    FirstName = users.User.FirstName,
-                    //    LastName = users.User.LastName
-                    //}),
                     Owners = x.Owners.Select(userConversation => new UserConversation
                     {
                         UserId = userConversation.UserId,
+                        ConversationId = userConversation.ConversationId,
                     }),
                 })
                 .AsNoTracking()

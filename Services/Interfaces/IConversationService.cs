@@ -12,7 +12,7 @@ namespace FalcoBackEnd.Services.Interfaces
         Task<ConversationInfoDTO> GetConversationByID(int conversationID);
         Task<IEnumerable<ConversationInfoDTO>> GetAllConversations();
         Task<ConversationInfoDTO> AddConversation(ICollection<AddConversationDTO> users);
-        Task<ConversationInfoDTO> EditConversation(int id, ICollection<int> users);
+        Task<ConversationInfoDTO> EditConversation(int id, ICollection<AddConversationDTO> users);
         Task<ConversationInfoDTO> DeleteConversation(int conversationID);
     }
 }
