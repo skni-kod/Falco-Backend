@@ -60,11 +60,21 @@ namespace FalcoBackEnd.Services.Implemetations
 
             var conversation = await falcoDbContext.Conversations
                 .Include(x => x.Owners)
+                .Include(m => m.Messages)
                 .SingleOrDefaultAsync(u => u.ConverastionId == conversationID);
 
             var conversationToReturn = new ConversationInfoDTO
             {
                 ConverastionId = conversation.ConverastionId,
+                Messages = conversation.Messages?.Select(m => new MessageDTO
+                {
+                    Message_id = m.Message_id,
+                    Author_id = m.Author_id,
+                    Conversation_id = m.Conversation_id,
+                    Content = m.Content,
+                    CreateDate = m.CreateDate,
+                }
+                    ),
                 Owners = conversation.Owners.Select(x => new UserConversation
                 {
                     UserId = x.UserId,
