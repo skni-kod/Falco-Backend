@@ -22,9 +22,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            var response = userService.GetAllUsers();
+            var response = await userService.GetAllUsers();
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
@@ -34,9 +34,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            var response = userService.GetUserById(id);
+            var response = await userService.GetUserById(id);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrng" });
@@ -45,9 +45,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditUser([FromBody]UserDTO user)
+        public async Task<IActionResult> EditUser([FromBody]UserDTO user)
         {
-            var response = userService.EditUser(user);
+            var response = await userService.EditUser(user);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -56,9 +56,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteUser([FromBody] UserDTO user)
+        [Route("{userId}")]
+        public async Task<IActionResult> DeleteUser( int userId)
         {
-            var response = userService.DeleteUser(user);
+            var response = await userService.DeleteUser(userId);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

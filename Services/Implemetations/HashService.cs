@@ -21,7 +21,7 @@ namespace FalcoBackEnd.Services.Implemetations
             this.appSettings = appSettings.Value;
             this.logger = logger;
         }
-        public string Encrypt(string password)
+        public async Task<string> Encrypt(string password)
         {
             logger.LogInformation("Executing Encrypt method");
 

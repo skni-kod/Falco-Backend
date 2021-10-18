@@ -9,10 +9,10 @@ namespace FalcoBackEnd.Services.Interfaces
 {
     public interface IConversationService
     {
-        ConversationDTO GetConversationByID(int conversationID);
-        IEnumerable<Conversation> GetAllConversations();
-        ResponseDTO AddConversation(int[] owners);
-        ResponseDTO EditConversation(int conversationID, int[] owners);
-        ResponseDTO DeleteConversation(int conversationID);
+        Task<ConversationInfoDTO> GetConversationByID(int conversationID);
+        Task<IEnumerable<ConversationInfoDTO>> GetAllConversations();
+        Task<ConversationInfoDTO> AddConversation(ICollection<AddConversationDTO> users);
+        Task<ConversationInfoDTO> EditConversation(int id, ICollection<AddConversationDTO> users);
+        Task<ConversationInfoDTO> DeleteConversation(int conversationID);
     }
 }

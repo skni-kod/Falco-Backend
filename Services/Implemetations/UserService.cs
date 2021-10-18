@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FalcoBackEnd.Services.Implemetations
 {
@@ -15,72 +16,78 @@ namespace FalcoBackEnd.Services.Implemetations
         private readonly FalcoDbContext falcoDbContext;
         private readonly ILogger logger;
         private readonly IMapper mapper;
+        private readonly IHashService hashService;
 
         public UserService(FalcoDbContext falcoDbContext,
                             ILogger<UserService> logger,
-                            IMapper mapper)
+                            IMapper mapper,
+                            IHashService hashService)
         {
             this.falcoDbContext = falcoDbContext;
             this.logger = logger;
             this.mapper = mapper;
+            this.hashService = hashService;
         }
 
-        public ResponseDTO DeleteUser(UserDTO user)
+        public async Task<UserInfoDTO> DeleteUser(int userId)
         {
             logger.LogInformation("Executing DeleteUser method");
 
-            var result = falcoDbContext.Users.SingleOrDefault(u => u.Id == user.Id);
+            var result = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            if (result == null) return null;
+            falcoDbContext.Users.Remove(result);
+            await falcoDbContext.SaveChangesAsync();
 
-            if (result == null)
-            {
-                return new ResponseDTO() { Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
-            }
-            try
-            {
-                falcoDbContext.Users.Remove(result);
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-
-                return new ResponseDTO() { Code = 400, Message = e.Message, Status = "Error" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Delete user in db", Status = "Success" };
+            return mapper.Map<UserInfoDTO>(result);
         }
 
-        public ResponseDTO EditUser(UserDTO user)
+        public async Task<UserDTO> EditUser(UserDTO userDto)
         {
             logger.LogInformation("Executing DeleteUser method");
 
-            if (!falcoDbContext.Users.Where(u => u.Id == user.Id).Any())
-            {
-                return new ResponseDTO() {Code = 400, Message = $"User with email {user.Email} does not exist in db", Status = "Error" };
-            }
-            try
-            {
-                falcoDbContext.Users.Update(mapper.Map<UserDTO, User>(user));
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
+            var user = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Id == userDto.Id);
 
-                return new ResponseDTO() {Code = 400, Message = e.Message, Status = "Error" };
-            }
-            return new ResponseDTO() { Code = 200, Message = "Edited user in db", Status = "Success" };
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Email = userDto.Email;
+            user.Password = await hashService.Encrypt(userDto.Password);
+
+            falcoDbContext.Users.Update(user);
+            await falcoDbContext.SaveChangesAsync();
+
+            return mapper.Map<UserDTO>(user);
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<UserInfoDTO>> GetAllUsers()
         {
             logger.LogInformation("Executing GetAllUsers method");
 
-            return falcoDbContext.Users;
+            var users =  await falcoDbContext.Users
+                .Select( u => new UserInfoDTO
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .ToListAsync();
+
+            return users;
         }
 
-        public User GetUserById(int id)
+        public async Task<UserInfoDTO> GetUserById(int id)
         {
             logger.LogInformation("Executing GetUserById method");
 
-            return falcoDbContext.Users.SingleOrDefault(x => x.Id == id);
+            var user = await falcoDbContext.Users
+                .Select(u => new UserInfoDTO
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            return user;
         }
     }
 }

@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalcoBackEnd.Migrations
 {
     [DbContext(typeof(FalcoDbContext))]
-    [Migration("20210617083717_Add models and conversations2")]
-    partial class Addmodelsandconversations2
+    [Migration("20211016223746_updateModels")]
+    partial class updateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("FalcoBackEnd.Models.Conversation", b =>
@@ -27,10 +27,6 @@ namespace FalcoBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Owners")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ConverastionId");
 
@@ -48,8 +44,10 @@ namespace FalcoBackEnd.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationConverastionId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Conversation_id")
                         .HasColumnType("int");
@@ -59,7 +57,7 @@ namespace FalcoBackEnd.Migrations
 
                     b.HasKey("Message_id");
 
-                    b.HasIndex("Conversation_id");
+                    b.HasIndex("ConversationConverastionId");
 
                     b.ToTable("Messages");
                 });
@@ -72,7 +70,6 @@ namespace FalcoBackEnd.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -82,7 +79,6 @@ namespace FalcoBackEnd.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -90,20 +86,59 @@ namespace FalcoBackEnd.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("FalcoBackEnd.Models.UserConversation", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ConversationId");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("UserConversations");
+                });
+
             modelBuilder.Entity("FalcoBackEnd.Models.Message", b =>
                 {
                     b.HasOne("FalcoBackEnd.Models.Conversation", "Conversation")
                         .WithMany("Messages")
-                        .HasForeignKey("Conversation_id")
+                        .HasForeignKey("ConversationConverastionId");
+
+                    b.Navigation("Conversation");
+                });
+
+            modelBuilder.Entity("FalcoBackEnd.Models.UserConversation", b =>
+                {
+                    b.HasOne("FalcoBackEnd.Models.Conversation", "Conversation")
+                        .WithMany("Owners")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FalcoBackEnd.Models.User", "User")
+                        .WithMany("Conversations")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Conversation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FalcoBackEnd.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Owners");
+                });
+
+            modelBuilder.Entity("FalcoBackEnd.Models.User", b =>
+                {
+                    b.Navigation("Conversations");
                 });
 #pragma warning restore 612, 618
         }

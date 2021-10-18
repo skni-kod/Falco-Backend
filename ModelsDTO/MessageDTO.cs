@@ -12,5 +12,7 @@ namespace FalcoBackEnd.ModelsDTO
         public int Author_id { get; set; }
         public string Content { get; set; }
         public DateTime CreateDate { get; set; }
+
+
     }
 }

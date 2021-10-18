@@ -7,15 +7,15 @@ namespace FalcoBackEnd.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Messages_Conversations_ConversationConverastion_id",
+                name: "FK_Messages_Conversations_ConversationConverastionId",
                 table: "Messages");
 
             migrationBuilder.DropIndex(
-                name: "IX_Messages_ConversationConverastion_id",
+                name: "IX_Messages_ConversationConverastionId",
                 table: "Messages");
 
             migrationBuilder.DropColumn(
-                name: "ConversationConverastion_id",
+                name: "ConversationConverastionId",
                 table: "Messages");
 
             migrationBuilder.CreateIndex(
@@ -28,7 +28,7 @@ namespace FalcoBackEnd.Migrations
                 table: "Messages",
                 column: "Conversation_id",
                 principalTable: "Conversations",
-                principalColumn: "Converastion_id",
+                principalColumn: "ConverastionId",
                 onDelete: ReferentialAction.Cascade);
         }
 
@@ -43,22 +43,22 @@ namespace FalcoBackEnd.Migrations
                 table: "Messages");
 
             migrationBuilder.AddColumn<int>(
-                name: "ConversationConverastion_id",
+                name: "ConversationConverastionId",
                 table: "Messages",
                 type: "int",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ConversationConverastion_id",
+                name: "IX_Messages_ConversationConverastionId",
                 table: "Messages",
-                column: "ConversationConverastion_id");
+                column: "ConversationConverastionId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Messages_Conversations_ConversationConverastion_id",
+                name: "FK_Messages_Conversations_ConversationConverastionId",
                 table: "Messages",
-                column: "ConversationConverastion_id",
+                column: "ConversationConverastionId",
                 principalTable: "Conversations",
-                principalColumn: "Converastion_id",
+                principalColumn: "ConverastionId",
                 onDelete: ReferentialAction.Restrict);
         }
     }

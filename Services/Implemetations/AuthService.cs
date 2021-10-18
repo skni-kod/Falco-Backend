@@ -12,6 +12,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace FalcoBackEnd.Services.Implemetations
 {
@@ -36,21 +38,22 @@ namespace FalcoBackEnd.Services.Implemetations
             this.mapper = mapper;
         }
 
-        public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model)
+        public async Task<AuthenticateResponseDTO> Authenticate(AuthenticateRequestDTO model)
         {
             logger.LogInformation("Executing Authenticate method");
-            model.Password = hashService.Encrypt(model.Password);
+            model.Password = await hashService.Encrypt(model.Password);
 
-            var user = falcoDbContext.Users.SingleOrDefault(x => x.Email == model.Email && x.Password == model.Password);
+            var user = await falcoDbContext.Users.
+                SingleOrDefaultAsync(x => x.Email == model.Email && x.Password == model.Password);
 
-            if (user == null) return null;
+            if (user == null)  return null;
 
-            var token = NewToken(user);
+            var token = await NewToken(user);
 
             return new AuthenticateResponseDTO(user, token);
         }
 
-        public string NewToken(User user)
+        public async Task<string> NewToken(User user)
         {
             logger.LogInformation("Executing NewToken method");
 
@@ -68,28 +71,27 @@ namespace FalcoBackEnd.Services.Implemetations
             return jwtString;
         }
 
-        public AuthenticateResponseDTO AddUser(UserDTO user)
+        public async Task<AuthenticateResponseDTO> AddUser(AddUserDTO AddUserDTO)
         {
             logger.LogInformation("Executing AddUser method");
-
-            if (falcoDbContext.Users.Where(u => u.Email == user.Email).Any())
+            var checkUser = await falcoDbContext.Users.SingleOrDefaultAsync(u => u.Email == AddUserDTO.Email);
+            if (checkUser != null)
             {
-                throw new InvalidOperationException($"User with email {user.Email} already exist in db");
+                return null;
             }
-
-            UserDTO newUser = new UserDTO { Email = user.Email, FirstName = user.FirstName, LastName = user.LastName, Password = user.Password };
-            newUser.Password = hashService.Encrypt(newUser.Password);
-
-            try
+            AddUserDTO newUser = new AddUserDTO
             {
-                var result = falcoDbContext.Users.Add(mapper.Map<UserDTO, User>(newUser));
-                falcoDbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(e.Message);
-            }
-            return Authenticate(new AuthenticateRequestDTO { Email = user.Email, Password = user.Password });
+                Email = AddUserDTO.Email,
+                FirstName = AddUserDTO.FirstName,
+                LastName = AddUserDTO.LastName,
+                Password = AddUserDTO.Password
+            };
+            newUser.Password = await hashService.Encrypt(AddUserDTO.Password);
+            var user = mapper.Map<AddUserDTO, User>(newUser);
+            var result = falcoDbContext.Users.Add(user);
+            await falcoDbContext.SaveChangesAsync();
+
+            return await Authenticate(new AuthenticateRequestDTO { Email = AddUserDTO.Email, Password = AddUserDTO.Password });
         }
     }
 }

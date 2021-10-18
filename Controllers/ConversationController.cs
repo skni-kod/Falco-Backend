@@ -1,4 +1,6 @@
-﻿using FalcoBackEnd.Helpers;
+﻿using AutoMapper;
+using FalcoBackEnd.Helpers;
+using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,16 +19,18 @@ namespace FalcoBackEnd.Controllers
     public class ConversationController : ControllerBase
     {
         private readonly IConversationService conversationService;
+        private readonly IMapper mapper;
 
-        public ConversationController(IConversationService conversationService)
+        public ConversationController(IConversationService conversationService, IMapper mapper)
         {
             this.conversationService = conversationService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult GetConversation()
+        public async Task<IActionResult> GetConversation()
         {
-            var response = conversationService.GetAllConversations();
+            var response = await conversationService.GetAllConversations();
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -36,9 +40,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetConversationById(int id)
+        public async Task<IActionResult> GetConversationById(int id)
         {
-            var response = conversationService.GetConversationByID(id);
+            var response = await conversationService.GetConversationByID(id);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -47,9 +51,9 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddConversation([FromBody]params int[] owners)
+        public async Task<IActionResult> AddConversation([FromBody] ICollection<AddConversationDTO> users)
         {
-            var response = conversationService.AddConversation(owners);
+            var response = await conversationService.AddConversation(users);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -59,9 +63,9 @@ namespace FalcoBackEnd.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult EditConversation(int id, [FromBody] params int[] owners)
+        public async Task<IActionResult> EditConversation(int id, [FromBody] ICollection<AddConversationDTO> users)
         {
-            var response = conversationService.EditConversation(id, owners);
+            var response = await conversationService.EditConversation(id, users);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -70,10 +74,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteConversation(int id)
+        [Route("{conversationID}")]
+        public async Task<IActionResult> DeleteConversation(int conversationID)
         {
-            var response = conversationService.DeleteConversation(id);
+            var response = await conversationService.DeleteConversation(conversationID);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

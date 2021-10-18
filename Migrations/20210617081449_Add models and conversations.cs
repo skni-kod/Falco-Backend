@@ -11,13 +11,13 @@ namespace FalcoBackEnd.Migrations
                 name: "Conversations",
                 columns: table => new
                 {
-                    Converastion_id = table.Column<int>(type: "int", nullable: false)
+                    ConverastionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Owners = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Conversations", x => x.Converastion_id);
+                    table.PrimaryKey("PK_Conversations", x => x.ConverastionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -30,23 +30,23 @@ namespace FalcoBackEnd.Migrations
                     Author_id = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ConversationConverastion_id = table.Column<int>(type: "int", nullable: true)
+                    ConversationConverastionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Message_id);
                     table.ForeignKey(
-                        name: "FK_Messages_Conversations_ConversationConverastion_id",
-                        column: x => x.ConversationConverastion_id,
+                        name: "FK_Messages_Conversations_ConversationConverastionId",
+                        column: x => x.ConversationConverastionId,
                         principalTable: "Conversations",
-                        principalColumn: "Converastion_id",
+                        principalColumn: "ConverastionId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ConversationConverastion_id",
+                name: "IX_Messages_ConversationConverastionId",
                 table: "Messages",
-                column: "ConversationConverastion_id");
+                column: "ConversationConverastionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
