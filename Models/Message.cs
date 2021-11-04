@@ -13,5 +13,7 @@ namespace FalcoBackEnd.Models
         public int Author_id { get; set; }
         public string Content { get; set; }
         public DateTime CreateDate { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool IsEdited { get; set; }
     }
 }

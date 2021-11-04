@@ -4,14 +4,16 @@ using FalcoBackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FalcoBackEnd.Migrations
 {
     [DbContext(typeof(FalcoDbContext))]
-    partial class FalcoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211026114403_Minor_changes_edited_update")]
+    partial class Minor_changes_edited_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

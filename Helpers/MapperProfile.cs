@@ -17,6 +17,7 @@ namespace FalcoBackEnd.Models.Configuration
             CreateMap<User, UserDTO>();
             CreateMap<User, UserInfoDTO>();
             CreateMap<AddUserDTO, User>();
+            CreateMap<Message, MessageDTO>();
         }
     }
 }

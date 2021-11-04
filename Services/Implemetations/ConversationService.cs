@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static FalcoBackEnd.ModelsDTO.ConversationInfoDTO;
 
 namespace FalcoBackEnd.Services.Implemetations
 {
@@ -44,10 +45,9 @@ namespace FalcoBackEnd.Services.Implemetations
             var conversationToReturn = new ConversationInfoDTO
             {
                 ConverastionId = conversation.ConverastionId,
-                Owners = conversation.Owners.Select( x => new UserConversation
+                Owners = conversation.Owners.Select( x => new UserConversationDTO
                 {
-                    UserId = x.UserId,
-                    ConversationId = x.ConversationId
+                    UserId = x.UserId
                 })
             };
 
@@ -75,10 +75,9 @@ namespace FalcoBackEnd.Services.Implemetations
                     CreateDate = m.CreateDate,
                 }
                     ),
-                Owners = conversation.Owners.Select(x => new UserConversation
+                Owners = conversation.Owners.Select(x => new UserConversationDTO
                 {
-                    UserId = x.UserId,
-                    ConversationId = x.ConversationId
+                    UserId = x.UserId
                 })
             };
 
@@ -133,15 +132,15 @@ namespace FalcoBackEnd.Services.Implemetations
             var conversationToReturn = new ConversationInfoDTO
             {
                 ConverastionId = conversation.ConverastionId,
-                Owners = conversation.Owners.Select(x => new UserConversation
+                Owners = conversation.Owners.Select(x => new UserConversationDTO
                 {
-                    UserId = x.UserId,
-                    ConversationId = x.ConversationId
+                    UserId = x.UserId
                 })
             };
 
             return conversationToReturn; 
         }
+
 
         public async Task<IEnumerable<ConversationInfoDTO>> GetAllConversations()
         {
@@ -160,9 +159,9 @@ namespace FalcoBackEnd.Services.Implemetations
                         CreateDate = m.CreateDate,
                     }
                     ),
-                    Owners = x.Owners.Select(userConversation => new UserConversation{
-                          UserId = userConversation.UserId,
-                          ConversationId = userConversation.ConversationId,
+                    Owners = x.Owners.Select(userConversation => new UserConversationDTO
+                    {
+                          UserId = userConversation.UserId
                     }),
                 })
                 .AsNoTracking()
@@ -175,7 +174,7 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             logger.LogInformation("Executing GetConveration method");
 
-            ConversationInfoDTO conversation = await falcoDbContext.Conversations
+            ConversationInfoDTO conversation = await falcoDbContext.Conversations.Include(m => m.Messages)
                 .Select(x => new ConversationInfoDTO
                 {
                     ConverastionId = x.ConverastionId,
@@ -188,10 +187,9 @@ namespace FalcoBackEnd.Services.Implemetations
                         CreateDate = m.CreateDate,
                     }
                     ),
-                    Owners = x.Owners.Select(userConversation => new UserConversation
+                    Owners = x.Owners.Select(u => new UserConversationDTO
                     {
-                        UserId = userConversation.UserId,
-                        ConversationId = userConversation.ConversationId,
+                        UserId = u.UserId,
                     }),
                 })
                 .AsNoTracking()
