@@ -15,7 +15,7 @@ namespace FalcoBackEnd.Services.Implemetations
     public class ConversationService : IConversationService
     {
         private readonly ILogger logger;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
         private readonly FalcoDbContext falcoDbContext;
         
         public ConversationService(ILogger<ConversationService> logger,
@@ -23,7 +23,7 @@ namespace FalcoBackEnd.Services.Implemetations
                                     FalcoDbContext falcoDbContext)
         {
             this.logger = logger;
-            this.mapper = mapper;
+            _mapper = mapper;
             this.falcoDbContext = falcoDbContext;
         }
 
@@ -42,14 +42,7 @@ namespace FalcoBackEnd.Services.Implemetations
 
             if (conversation.ConverastionId == 0) return null;
 
-            var conversationToReturn = new ConversationInfoDTO
-            {
-                ConverastionId = conversation.ConverastionId,
-                Owners = conversation.Owners.Select( x => new UserConversationDTO
-                {
-                    UserId = x.UserId
-                })
-            };
+            var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
             return conversationToReturn;
          }
@@ -60,26 +53,9 @@ namespace FalcoBackEnd.Services.Implemetations
 
             var conversation = await falcoDbContext.Conversations
                 .Include(x => x.Owners)
-                .Include(m => m.Messages)
                 .SingleOrDefaultAsync(u => u.ConverastionId == conversationID);
 
-            var conversationToReturn = new ConversationInfoDTO
-            {
-                ConverastionId = conversation.ConverastionId,
-                Messages = conversation.Messages?.Select(m => new MessageDTO
-                {
-                    Message_id = m.Message_id,
-                    Author_id = m.Author_id,
-                    Conversation_id = m.Conversation_id,
-                    Content = m.Content,
-                    CreateDate = m.CreateDate,
-                }
-                    ),
-                Owners = conversation.Owners.Select(x => new UserConversationDTO
-                {
-                    UserId = x.UserId
-                })
-            };
+            var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
             falcoDbContext.Conversations.Remove(conversation);
             await falcoDbContext.SaveChangesAsync();
@@ -96,7 +72,6 @@ namespace FalcoBackEnd.Services.Implemetations
                 .Select(x => new Conversation
                 {
                     ConverastionId = x.ConverastionId,
-                    Messages = x.Messages,
                     Owners = x.Owners.Select(userConversation => new UserConversation
                     {
                         UserId = userConversation.UserId,
@@ -129,18 +104,10 @@ namespace FalcoBackEnd.Services.Implemetations
             falcoDbContext.Conversations.Update(conversation);
             await falcoDbContext.SaveChangesAsync();
 
-            var conversationToReturn = new ConversationInfoDTO
-            {
-                ConverastionId = conversation.ConverastionId,
-                Owners = conversation.Owners.Select(x => new UserConversationDTO
-                {
-                    UserId = x.UserId
-                })
-            };
+            var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
             return conversationToReturn; 
         }
-
 
         public async Task<IEnumerable<ConversationInfoDTO>> GetAllConversations()
         {
@@ -150,15 +117,6 @@ namespace FalcoBackEnd.Services.Implemetations
                 .Select(x => new ConversationInfoDTO
                 {
                     ConverastionId = x.ConverastionId,
-                    Messages = x.Messages.Select(m => new MessageDTO
-                    {
-                        Message_id = m.Message_id,
-                        Author_id = m.Author_id,
-                        Conversation_id = m.Conversation_id,
-                        Content = m.Content,
-                        CreateDate = m.CreateDate,
-                    }
-                    ),
                     Owners = x.Owners.Select(userConversation => new UserConversationDTO
                     {
                           UserId = userConversation.UserId
@@ -174,19 +132,10 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             logger.LogInformation("Executing GetConveration method");
 
-            ConversationInfoDTO conversation = await falcoDbContext.Conversations.Include(m => m.Messages)
+            ConversationInfoDTO conversation = await falcoDbContext.Conversations
                 .Select(x => new ConversationInfoDTO
                 {
                     ConverastionId = x.ConverastionId,
-                    Messages = x.Messages.Select(m => new MessageDTO
-                    {
-                        Message_id = m.Message_id,
-                        Author_id = m.Author_id,
-                        Conversation_id = m.Conversation_id,
-                        Content = m.Content,
-                        CreateDate = m.CreateDate,
-                    }
-                    ),
                     Owners = x.Owners.Select(u => new UserConversationDTO
                     {
                         UserId = u.UserId,

@@ -26,27 +26,17 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public async Task<MessageDTO> CreateMessage(AddMessageDTO addMessageDTO, int conversationID)
         {
-            var message = new Message
-            {
-                Author_id = addMessageDTO.Author_id,
-                Content = addMessageDTO.Content,
-                Conversation_id = conversationID,
-                CreateDate = DateTime.UtcNow,
-                IsDeleted = false,
-                IsEdited = false,
-            };
+            var message = _mapper.Map<Message>(addMessageDTO);
+            message.Conversation_id = conversationID;
+            message.CreateDate = DateTime.UtcNow;
+            message.IsDeleted = false;
+            message.IsEdited = false;
 
-           await _falcoDbContext.AddAsync(message);
-           await _falcoDbContext.SaveChangesAsync();
 
-            var messageDTO = new MessageDTO
-            {
-                Author_id = message.Author_id,
-                Content = message.Content,
-                Conversation_id = message.Conversation_id,
-                CreateDate = message.CreateDate,
-                Message_id = message.Message_id
-            };
+            await _falcoDbContext.AddAsync(message);
+            await _falcoDbContext.SaveChangesAsync();
+
+            var messageDTO = _mapper.Map<MessageDTO>(message);
             return messageDTO;
         }
 
@@ -54,14 +44,7 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             Message message = await _falcoDbContext.Messages.SingleOrDefaultAsync(m => m.Message_id == messageID);
 
-            var messageDTO = new MessageDTO
-            {
-                Author_id = message.Author_id,
-                Content = message.Content,
-                Conversation_id = message.Conversation_id,
-                CreateDate = message.CreateDate,
-                Message_id = message.Message_id
-            };
+            var messageDTO = _mapper.Map<MessageDTO>(message);
 
             message.IsDeleted = true;
             await _falcoDbContext.SaveChangesAsync();
@@ -75,14 +58,7 @@ namespace FalcoBackEnd.Services.Implemetations
                 .SingleOrDefaultAsync(m => m.Message_id == messageID);
 
             if (message == null) return null;
-            var messageDTO = new MessageDTO
-            {
-                Author_id = message.Author_id,
-                Content = message.Content,
-                Conversation_id = message.Conversation_id,
-                CreateDate = message.CreateDate,
-                Message_id = message.Message_id
-            };
+            var messageDTO = _mapper.Map<MessageDTO>(message);
 
             return messageDTO;
         }
