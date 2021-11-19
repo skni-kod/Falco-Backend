@@ -4,14 +4,16 @@ using FalcoBackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FalcoBackEnd.Migrations
 {
     [DbContext(typeof(FalcoDbContext))]
-    partial class FalcoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211026084018_Edit&Delete_messages")]
+    partial class EditDelete_messages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,10 +55,10 @@ namespace FalcoBackEnd.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsEdited")
+                    b.Property<bool>("Edited")
                         .HasColumnType("bit");
 
                     b.HasKey("Message_id");

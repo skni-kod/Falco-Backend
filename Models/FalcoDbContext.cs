@@ -25,6 +25,8 @@ namespace FalcoBackEnd.Models
             //modelBuilder.ApplyConfiguration(new MessageConfiguration());
             //base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Message>().HasQueryFilter(b => !b.IsDeleted);
+
             modelBuilder.Entity<Conversation>()
                 .HasKey(k => k.ConverastionId);
 
