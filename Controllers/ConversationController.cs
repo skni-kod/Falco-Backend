@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using FalcoBackEnd.Helpers;
-using FalcoBackEnd.Models;
 using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FalcoBackEnd.Controllers
@@ -27,10 +22,10 @@ namespace FalcoBackEnd.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetConversation()
+        [HttpGet("{userId:int}")]
+        public async Task<IActionResult> GetUserConversations(int userId)
         {
-            var response = await conversationService.GetAllConversations();
+            var response = await conversationService.GetAllConversations(userId);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });
@@ -39,10 +34,10 @@ namespace FalcoBackEnd.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetConversationById(int id)
+        [Route("single_conversation/{conversationId:int}")]
+        public async Task<IActionResult> GetConversationById(int conversationId)
         {
-            var response = await conversationService.GetConversationByID(id);
+            var response = await conversationService.GetConversationById(conversationId);
             if (response == null)
             {
                 return BadRequest(new { message = "smthwrg" });

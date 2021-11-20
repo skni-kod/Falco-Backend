@@ -4,11 +4,9 @@ using FalcoBackEnd.ModelsDTO;
 using FalcoBackEnd.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static FalcoBackEnd.ModelsDTO.ConversationInfoDTO;
 
 namespace FalcoBackEnd.Services.Implemetations
 {
@@ -17,7 +15,7 @@ namespace FalcoBackEnd.Services.Implemetations
         private readonly ILogger logger;
         private readonly IMapper _mapper;
         private readonly FalcoDbContext falcoDbContext;
-        
+
         public ConversationService(ILogger<ConversationService> logger,
                                     IMapper mapper,
                                     FalcoDbContext falcoDbContext)
@@ -29,7 +27,8 @@ namespace FalcoBackEnd.Services.Implemetations
 
         public async Task<ConversationInfoDTO> AddConversation(ICollection<AddConversationDTO> users)
         {
-            var conversation = new Conversation {
+            var conversation = new Conversation
+            {
                 Owners = users.Select(x => new UserConversation
                 {
                     UserId = x.Id
@@ -45,15 +44,15 @@ namespace FalcoBackEnd.Services.Implemetations
             var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
             return conversationToReturn;
-         }
+        }
 
-        public async Task<ConversationInfoDTO> DeleteConversation(int conversationID)
+        public async Task<ConversationInfoDTO> DeleteConversation(int conversationId)
         {
             logger.LogInformation("Executing DeleteConversation method");
 
             var conversation = await falcoDbContext.Conversations
                 .Include(x => x.Owners)
-                .SingleOrDefaultAsync(u => u.ConverastionId == conversationID);
+                .SingleOrDefaultAsync(u => u.ConverastionId == conversationId);
 
             var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
@@ -62,11 +61,11 @@ namespace FalcoBackEnd.Services.Implemetations
 
             return conversationToReturn;
         }
-        
+
 
         public async Task<ConversationInfoDTO> EditConversation(int id, ICollection<AddConversationDTO> users)
         {
-            logger.LogInformation("Executing EditConversation method");      
+            logger.LogInformation("Executing EditConversation method");
 
             Conversation conversation = await falcoDbContext.Conversations
                 .Select(x => new Conversation
@@ -75,7 +74,6 @@ namespace FalcoBackEnd.Services.Implemetations
                     Owners = x.Owners.Select(userConversation => new UserConversation
                     {
                         UserId = userConversation.UserId,
-                        ConversationId = userConversation.ConversationId,
                     }).ToList(),
                 })
                 .SingleOrDefaultAsync(x => x.ConverastionId == id);
@@ -96,9 +94,9 @@ namespace FalcoBackEnd.Services.Implemetations
             else
             {
                 conversation.Owners = users.Select(x => new UserConversation
-                   {
-                       UserId = x.Id
-                   }).ToList();
+                {
+                    UserId = x.Id
+                }).ToList();
             }
 
             falcoDbContext.Conversations.Update(conversation);
@@ -106,45 +104,48 @@ namespace FalcoBackEnd.Services.Implemetations
 
             var conversationToReturn = _mapper.Map<ConversationInfoDTO>(conversation);
 
-            return conversationToReturn; 
+            return conversationToReturn;
         }
 
-        public async Task<IEnumerable<ConversationInfoDTO>> GetAllConversations()
+        public async Task<IEnumerable<ConversationInfoDTO>> GetAllConversations(int userId)
         {
             logger.LogInformation("Executing GetAllConversations method");
 
-            var conversations = await falcoDbContext.Conversations
+            var conversations = await falcoDbContext.Conversations.Where(x => x.Owners.Any(x => x.UserId == userId))
                 .Select(x => new ConversationInfoDTO
                 {
                     ConverastionId = x.ConverastionId,
-                    Owners = x.Owners.Select(userConversation => new UserConversationDTO
+                    Owners = x.Owners.Select(userConversation => new UserInfoDTO
                     {
-                          UserId = userConversation.UserId
+                         Id = userConversation.UserId,
+                         FirstName = userConversation.User.FirstName,
+                         LastName = userConversation.User.LastName
                     }),
                 })
-                .AsNoTracking()
                 .ToListAsync();
 
             return conversations;
         }
 
-        public async Task<ConversationInfoDTO> GetConversationByID(int conversationID)
+        public async Task<ConversationInfoDTO> GetConversationById(int conversationId)
         {
             logger.LogInformation("Executing GetConveration method");
 
-            ConversationInfoDTO conversation = await falcoDbContext.Conversations
+            ConversationInfoDTO conversation = await falcoDbContext.Conversations.Where(x => x.Owners.Any(x => x.ConversationId == conversationId))
                 .Select(x => new ConversationInfoDTO
                 {
                     ConverastionId = x.ConverastionId,
-                    Owners = x.Owners.Select(u => new UserConversationDTO
+                    Owners = x.Owners.Select(u => new UserInfoDTO
                     {
-                        UserId = u.UserId,
+                        Id = u.UserId,
+                        FirstName = u.User.FirstName,
+                        LastName = u.User.LastName
+
                     }),
                 })
-                .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.ConverastionId == conversationID);
+                .SingleOrDefaultAsync();
 
-            return  conversation;
+            return conversation;
         }
     }
 }
