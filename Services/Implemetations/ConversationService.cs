@@ -67,16 +67,7 @@ namespace FalcoBackEnd.Services.Implemetations
         {
             logger.LogInformation("Executing EditConversation method");
 
-            Conversation conversation = await falcoDbContext.Conversations
-                .Select(x => new Conversation
-                {
-                    ConverastionId = x.ConverastionId,
-                    Owners = x.Owners.Select(userConversation => new UserConversation
-                    {
-                        UserId = userConversation.UserId,
-                    }).ToList(),
-                })
-                .SingleOrDefaultAsync(x => x.ConverastionId == id);
+            var conversation = await falcoDbContext.Conversations.Include(x => x.Owners).SingleOrDefaultAsync(x => x.ConverastionId == id);
 
             ICollection<UserConversation> owners = users.Select(x => new UserConversation
             {
